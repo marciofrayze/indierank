@@ -1,0 +1,284 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+article {
+  height: 100%;
+  width: 100%;
+}
+.googlemaps {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  display: block;
+}
+@font-face {
+  font-family: "RobotoSlab";
+  src: url("../fonts/RobotoSlab-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "RobotoSlab";
+  src: url("../fonts/RobotoSlab-Bold.ttf") format("truetype");
+  font-weight: bold;
+}
+.pageContent {
+  font-family: "RobotoSlab", Verdana, Tahoma;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+}
+.custonButton {
+  color: #fff;
+  font-size: 15px;
+  background: #ed4664;
+  padding: 10px 40px 10px 40px;
+  text-decoration: none;
+  font-weight: bold;
+  display: block;
+  border: solid #ed4664 4px;
+}
+.pinkButton2 {
+  color: #ed4664;
+  font-size: 15px;
+  background: #fff;
+  padding: 10px 40px 10px 40px;
+  border: solid #ed4664 4px;
+  text-decoration: none;
+  font-weight: bold;
+  display: block;
+}
+.pinkLink a:link {
+  color: #ed4664;
+}
+.pinkLink a:visited {
+  color: #ed4664;
+}
+.pinkLink a:hover {
+  color: #ed4664;
+}
+.pinkLink a:active {
+  color: #ed4664;
+}
+.darkLink a:link {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.darkLink a:visited {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.darkLink a:hover {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.darkLink a:active {
+  color: #000;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.fadedBackground {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0.85;
+  z-index: 3;
+}
+.leftPanel {
+  position: absolute;
+  margin-left: 0;
+  width: 95%;
+  height: 100%;
+  z-index: 2;
+  background: #ed4664;
+  text-align: center;
+  color: white;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: none;
+}
+.leftPanel p {
+  padding-left: 4%;
+  padding-right: 4%;
+}
+.leftPanel a:link {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.leftPanel a:visited {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.leftPanel a:hover {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.leftPanel a:active {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.popup {
+  position: absolute;
+  margin: auto auto;
+  text-align: center;
+  top: 2.4em;
+  min-height: 60%;
+  background-color: white;
+  z-index: 4;
+  padding-left: 1em;
+  padding-right: 1em;
+  left: 2%;
+  right: 2%;
+  cursor: pointer;
+}
+.popupPinImage {
+  position: relative;
+  margin: auto auto;
+  min-width: 3em;
+  min-height: 3em;
+  top: -0.7em;
+  content: url("../imgs/PIN.svg");
+}
+.popup a {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.popup p {
+  margin: 5px;
+  padding: 0;
+}
+.about {
+  position: absolute;
+  color: white;
+  top: 10%;
+  margin-left: 10%;
+  margin-right: 10%;
+  z-index: 2;
+  text-align: center;
+  color: white;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: none;
+  z-index: 4;
+}
+.aboutClose {
+  position: absolute;
+  min-width: 1em;
+  min-height: 1em;
+  top: 5%;
+  right: 5%;
+  z-index: 5;
+}
+.menuIcon {
+  position: absolute;
+  left: 3%;
+  height: 3em;
+  width: 3em;
+  top: 3%;
+  z-index: 2;
+}
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+input[type="text"],
+textarea {
+  background-color: #d8d8d8;
+  padding: 15px;
+  border: 0;
+  margin-top: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  font-size: 14px;
+  color: black;
+}
+::-webkit-input-placeholder,
+:-moz-placeholder,
+::-moz-placeholder,
+:-ms-input-placeholder {
+  color: #787878;
+  font-size: 14px;
+}
+#loadingContent {
+  font-family: "Times New Roman", Times, serif;
+  position: fixed;
+  top: 25%;
+  text-align: center;
+  width: 100%;
+}
+.centeredBottomText {
+  position: fixed;
+  bottom: 10%;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+}
+body {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+@media all and (min-width: 800px) {
+  .googlemaps {
+    width: 70%;
+    max-width: 70%;
+    left: 30%;
+  }
+  .leftPanel {
+    width: 30%;
+    max-width: 30%;
+    display: block !important;
+  }
+  .popup {
+    min-width: 19em;
+    min-height: 20em;
+    top: 20%;
+    left: 40%;
+    right: 40%;
+    padding-left: 2em;
+    padding-right: 2em;
+    cursor: auto;
+  }
+  .menuIcon {
+    display: none;
+  }
+  .aboutClose {
+    position: absolute;
+    min-width: 1em;
+    min-height: 1em;
+    top: 20%;
+    right: 15%;
+    z-index: 4;
+  }
+  .about {
+    top: 20%;
+    left: 10%;
+    right: 10%;
+    max-width: 50%;
+  }
+  .centeredBottomText {
+    left: 30%;
+    width: 70%;
+  }
+}
