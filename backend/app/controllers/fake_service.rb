@@ -7,11 +7,14 @@ class FakeService < RackStep::Controller
     # (simulating a service).
     ranking = {}
     ranking['plate'] = 'ABC-1234'
-    ranking['comments'] = []
+    ranking['ratings'] = []
 
-    comment = 'really bad driver'
+    rating = {}
 
-    ranking['comments'] << comment
+    rating['comment'] = 'really bad driver'
+    rating['score'] = 1
+
+    ranking['ratings'] << rating
 
     response.header['Access-Control-Allow-Origin'] = '*'
     response.header['Access-Control-Allow-Headers'] = 'origin, content-type, accept, authorization, bearer'

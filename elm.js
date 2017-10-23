@@ -14371,7 +14371,7 @@ var _user$project$Styles$marginTopStyle = {
 var _user$project$Styles$smallMarginTopStyle = {
 	ctor: '::',
 	_0: _rtfeldman$elm_css$Css$marginTop(
-		_rtfeldman$elm_css$Css$px(10)),
+		_rtfeldman$elm_css$Css$px(20)),
 	_1: {ctor: '[]'}
 };
 var _user$project$Styles$smallMarginBottomStyle = {
@@ -14430,6 +14430,24 @@ var _user$project$Styles$buttonEnabledStyle = A2(
 			_1: {ctor: '[]'}
 		}
 	});
+var _user$project$Styles$infoTextStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(20)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$paddingTop(
+				_rtfeldman$elm_css$Css$px(20)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$color(_user$project$Styles$primaryDetailsColor),
+				_1: {ctor: '[]'}
+			}
+		}
+	},
+	_user$project$Styles$primaryFont);
 var _user$project$Styles$secondaryColor = _rtfeldman$elm_css$Css$hex('FFFFB3');
 var _user$project$Styles$primaryBackgroundStyle = {
 	ctor: '::',
@@ -14471,6 +14489,29 @@ var _user$project$Styles$titleStyle = A2(
 		}
 	},
 	_user$project$Styles$primaryFont);
+var _user$project$Styles$subtitleStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(30)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$paddingTop(
+				_rtfeldman$elm_css$Css$px(30)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$paddingBottom(
+					_rtfeldman$elm_css$Css$px(30)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$color(_user$project$Styles$primaryColor),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	},
+	_user$project$Styles$primaryFont);
 var _user$project$Styles$errorStyle = A2(
 	_elm_lang$core$Basics_ops['++'],
 	{
@@ -14494,10 +14535,6 @@ var _user$project$Styles$styles = function (_p0) {
 		_rtfeldman$elm_css$Css$asPairs(_p0));
 };
 
-var _user$project$Main$decodeRatingUrl = A2(
-	_elm_lang$core$Json_Decode$field,
-	'comments',
-	_elm_lang$core$Json_Decode$list(_elm_lang$core$Json_Decode$string));
 var _user$project$Main$formatPlate = function (plate) {
 	var validPlateNumbers = '1234567890';
 	var isValidPlateNumber = function ($char) {
@@ -14529,6 +14566,72 @@ var _user$project$Main$formatPlate = function (plate) {
 		_elm_lang$core$String$toUpper(filteredPlateChars),
 		A2(_elm_lang$core$Basics_ops['++'], '-', filteredPlateNumbers)) : _elm_lang$core$String$toUpper(filteredPlateChars);
 };
+var _user$project$Main$titleDiv = A2(
+	_elm_lang$html$Html$div,
+	{
+		ctor: '::',
+		_0: _user$project$Styles$styles(_user$project$Styles$titleStyle),
+		_1: {ctor: '[]'}
+	},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('IndieRank'),
+		_1: {ctor: '[]'}
+	});
+var _user$project$Main$resultDiv = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _user$project$Main$titleDiv,
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _user$project$Styles$styles(_user$project$Styles$subtitleStyle),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('RESULTS'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _user$project$Styles$styles(_user$project$Styles$infoTextStyle),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('No results found for this driver yet.'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _user$project$Styles$styles(
+								A2(_elm_lang$core$Basics_ops['++'], _user$project$Styles$buttonEnabledStyle, _user$project$Styles$smallMarginTopStyle)),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Add review'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	});
 var _user$project$Main$validPlate = function (plate) {
 	return _elm_lang$core$Native_Utils.eq(
 		_elm_lang$core$String$length(plate),
@@ -14537,35 +14640,73 @@ var _user$project$Main$validPlate = function (plate) {
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$Main$Model = F5(
-	function (a, b, c, d, e) {
-		return {plate: a, isSearching: b, failedToGetRatings: c, failedDetails: d, searchResult: e};
+var _user$project$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {plate: a, isSearching: b, failedToGetRatings: c, failedDetails: d, searchResult: e, showResults: f};
+	});
+var _user$project$Main$SearchResult = F2(
+	function (a, b) {
+		return {plate: a, ratings: b};
 	});
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
-	_0: A5(
+	_0: A6(
 		_user$project$Main$Model,
 		'',
 		false,
 		false,
 		'',
-		{ctor: '[]'}),
+		A2(
+			_user$project$Main$SearchResult,
+			'',
+			{ctor: '[]'}),
+		false),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 var _user$project$Main$Rating = F2(
 	function (a, b) {
 		return {score: a, comment: b};
 	});
-var _user$project$Main$SearchResult = F2(
-	function (a, b) {
-		return {plate: a, ratings: b};
-	});
+var _user$project$Main$decodeRating = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Main$Rating,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'score',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$int),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'comment',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string));
+var _user$project$Main$decodeRatings = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_user$project$Main$SearchResult,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'plate',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'ratings',
+		_elm_lang$core$Json_Decode$list(_user$project$Main$decodeRating)));
 var _user$project$Main$ShowRating = function (a) {
 	return {ctor: 'ShowRating', _0: a};
 };
 var _user$project$Main$getRatings = function (plate) {
 	var url = 'http://localhost:9393/fake';
-	var request = A2(_elm_lang$http$Http$get, url, _user$project$Main$decodeRatingUrl);
+	var request = A2(_elm_lang$http$Http$get, url, _user$project$Main$decodeRatings);
 	return A2(_elm_lang$http$Http$send, _user$project$Main$ShowRating, request);
 };
 var _user$project$Main$update = F2(
@@ -14594,7 +14735,7 @@ var _user$project$Main$update = F2(
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{isSearching: false, failedToGetRatings: false, searchResult: _p0._0._0}),
+							{isSearching: false, failedToGetRatings: false, searchResult: _p0._0._0, showResults: true}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -14634,18 +14775,7 @@ var _user$project$Main$searchForm = F5(
 					},
 					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _user$project$Styles$styles(_user$project$Styles$titleStyle),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html$text('IndieRank'),
-								_1: {ctor: '[]'}
-							}),
+						_0: _user$project$Main$titleDiv,
 						_1: {
 							ctor: '::',
 							_0: A2(
@@ -14776,19 +14906,7 @@ var _user$project$Main$searchForm = F5(
 							}
 						}
 					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(
-								_elm_lang$core$Basics$toString(searchResult)),
-							_1: {ctor: '[]'}
-						}),
-					_1: {ctor: '[]'}
-				}
+				_1: {ctor: '[]'}
 			});
 	});
 var _user$project$Main$view = function (model) {
@@ -14802,7 +14920,7 @@ var _user$project$Main$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: A5(_user$project$Main$searchForm, model.plate, model.isSearching, model.failedToGetRatings, model.failedDetails, model.searchResult),
+			_0: model.showResults ? _user$project$Main$resultDiv : A5(_user$project$Main$searchForm, model.plate, model.isSearching, model.failedToGetRatings, model.failedDetails, model.searchResult),
 			_1: {ctor: '[]'}
 		});
 };

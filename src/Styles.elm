@@ -77,6 +77,25 @@ titleStyle =
         ++ primaryFont
 
 
+infoTextStyle : List Style
+infoTextStyle =
+    [ fontSize (px 20)
+    , paddingTop (px 20)
+    , color primaryDetailsColor
+    ]
+        ++ primaryFont
+
+
+subtitleStyle : List Style
+subtitleStyle =
+    [ fontSize (px 30)
+    , paddingTop (px 30)
+    , paddingBottom (px 30)
+    , color primaryColor
+    ]
+        ++ primaryFont
+
+
 errorStyle : List Style
 errorStyle =
     [ fontSize (px 18)
@@ -108,7 +127,7 @@ smallMarginBottomStyle =
 
 smallMarginTopStyle : List Style
 smallMarginTopStyle =
-    [ marginTop (px 10) ]
+    [ marginTop (px 20) ]
 
 
 marginTopStyle : List Style

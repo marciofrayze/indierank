@@ -5,7 +5,7 @@ import Html.Attributes exposing (autofocus, disabled, maxlength, placeholder, va
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
-import Styles exposing (buttonDisabledStyle, buttonEnabledStyle, centerStyle, centeredBlockStyle, errorStyle, marginTopStyle, plateEmptyInputStyle, plateInputStyle, primaryBackgroundStyle, primaryFont, smallMarginBottomStyle, smallMarginTopStyle, styles, titleStyle)
+import Styles exposing (buttonDisabledStyle, buttonEnabledStyle, centerStyle, centeredBlockStyle, errorStyle, infoTextStyle, marginTopStyle, plateEmptyInputStyle, plateInputStyle, primaryBackgroundStyle, primaryFont, smallMarginBottomStyle, smallMarginTopStyle, styles, subtitleStyle, titleStyle)
 
 
 type alias Model =
@@ -13,13 +13,8 @@ type alias Model =
     , isSearching : Bool
     , failedToGetRatings : Bool
     , failedDetails : String
-    , searchResult : List String
-    }
-
-
-type alias Rating =
-    { score : Int
-    , comment : String
+    , searchResult : SearchResult
+    , showResults : Bool
     }
 
 
@@ -29,9 +24,15 @@ type alias SearchResult =
     }
 
 
+type alias Rating =
+    { score : Int
+    , comment : String
+    }
+
+
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" False False "" []
+    ( Model "" False False "" (SearchResult "" []) False
     , Cmd.none
     )
 
@@ -54,7 +55,7 @@ subscriptions model =
 type Msg
     = ChangePlate String
     | Search
-    | ShowRating (Result Http.Error (List String))
+    | ShowRating (Result Http.Error SearchResult)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,6 +82,7 @@ update msg model =
                 | isSearching = False
                 , failedToGetRatings = False
                 , searchResult = newSearchResult
+                , showResults = True
               }
             , Cmd.none
             )
@@ -104,7 +106,36 @@ validPlate plate =
     String.length plate == 8
 
 
-searchForm : String -> Bool -> Bool -> String -> List String -> Html.Html Msg
+resultDiv : Html.Html msg
+resultDiv =
+    div []
+        [ titleDiv
+        , div [ styles subtitleStyle ]
+            [ Html.text "RESULTS"
+            ]
+        , div [ styles infoTextStyle ]
+            [ Html.text "No results found for this driver yet."
+            ]
+        , button
+            [ styles
+                (buttonEnabledStyle
+                    ++ smallMarginTopStyle
+                )
+            ]
+            [ Html.text "Add review" ]
+        ]
+
+
+titleDiv : Html.Html msg
+titleDiv =
+    div
+        [ styles titleStyle
+        ]
+        [ Html.text "IndieRank"
+        ]
+
+
+searchForm : String -> Bool -> Bool -> String -> SearchResult -> Html.Html Msg
 searchForm plate isSearching failedToGetRatings failedDetails searchResult =
     let
         isSearchDisabled =
@@ -117,11 +148,7 @@ searchForm plate isSearching failedToGetRatings failedDetails searchResult =
         [ form
             [ onSubmit Search
             ]
-            [ div
-                [ styles titleStyle
-                ]
-                [ Html.text "IndieRank"
-                ]
+            [ titleDiv
             , div
                 [ styles
                     (smallMarginBottomStyle ++ smallMarginTopStyle)
@@ -168,8 +195,6 @@ searchForm plate isSearching failedToGetRatings failedDetails searchResult =
                     [ Html.text ""
                     ]
             ]
-        , Html.div []
-            [ Html.text (toString searchResult) ]
         ]
 
 
@@ -207,15 +232,27 @@ getRatings plate =
         url =
             "http://localhost:9393/fake"
 
+        -- Return exemple: {"plate":"ABC-1234","ratings":[{"comment":"really bad driver","score":1}]}
         request =
-            Http.get url decodeRatingUrl
+            Http.get url decodeRatings
     in
     Http.send ShowRating request
 
 
-decodeRatingUrl : Decode.Decoder (List String)
-decodeRatingUrl =
-    Decode.field "comments" (Decode.list Decode.string)
+decodeRatings : Decode.Decoder SearchResult
+decodeRatings =
+    Decode.map2
+        SearchResult
+        (Decode.at [ "plate" ] Decode.string)
+        (Decode.field "ratings" (Decode.list decodeRating))
+
+
+decodeRating : Decode.Decoder Rating
+decodeRating =
+    Decode.map2
+        Rating
+        (Decode.at [ "score" ] Decode.int)
+        (Decode.at [ "comment" ] Decode.string)
 
 
 view : Model -> Html.Html Msg
@@ -224,4 +261,8 @@ view model =
         [ styles
             (marginTopStyle ++ centeredBlockStyle)
         ]
-        [ searchForm model.plate model.isSearching model.failedToGetRatings model.failedDetails model.searchResult ]
+        [ if model.showResults then
+            resultDiv
+          else
+            searchForm model.plate model.isSearching model.failedToGetRatings model.failedDetails model.searchResult
+        ]
