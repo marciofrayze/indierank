@@ -1,0 +1,225 @@
+var _mfdavid$indierank$Styles$primaryFont = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$fontFamilies(
+		{
+			ctor: '::',
+			_0: 'Georgia',
+			_1: {
+				ctor: '::',
+				_0: 'serif',
+				_1: {ctor: '[]'}
+			}
+		}),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontWeight(_rtfeldman$elm_css$Css$bold),
+		_1: {ctor: '[]'}
+	}
+};
+var _mfdavid$indierank$Styles$plateEmptyInputStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$fontSize(
+		_rtfeldman$elm_css$Css$px(22)),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$plateInputStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$height(
+		_rtfeldman$elm_css$Css$px(40)),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$width(
+			_rtfeldman$elm_css$Css$px(190)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$padding(
+				_rtfeldman$elm_css$Css$px(15)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$fontSize(
+					_rtfeldman$elm_css$Css$px(40)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$outline(_rtfeldman$elm_css$Css$none),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _mfdavid$indierank$Styles$marginTopStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$marginTop(
+		_rtfeldman$elm_css$Css$px(70)),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$smallMarginTopStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$marginTop(
+		_rtfeldman$elm_css$Css$px(20)),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$smallMarginBottomStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$marginBottom(
+		_rtfeldman$elm_css$Css$px(20)),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$blockStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$display(_rtfeldman$elm_css$Css$block),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$centerStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$centeredBlockStyle = A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$blockStyle, _mfdavid$indierank$Styles$centerStyle);
+var _mfdavid$indierank$Styles$disabledDetailsColor = _rtfeldman$elm_css$Css$hex('D3D3D3');
+var _mfdavid$indierank$Styles$secondaryDetailsColor = _rtfeldman$elm_css$Css$hex('fff');
+var _mfdavid$indierank$Styles$buttonStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$secondaryDetailsColor),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(25)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$padding(
+					_rtfeldman$elm_css$Css$px(10)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$borderRadius(
+						_rtfeldman$elm_css$Css$px(5)),
+					_1: {
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$outline(_rtfeldman$elm_css$Css$none),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
+var _mfdavid$indierank$Styles$primaryDetailsColor = _rtfeldman$elm_css$Css$hex('ed4664');
+var _mfdavid$indierank$Styles$buttonEnabledStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	_mfdavid$indierank$Styles$buttonStyle,
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$backgroundColor(_mfdavid$indierank$Styles$primaryDetailsColor),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$borderColor(_mfdavid$indierank$Styles$primaryDetailsColor),
+			_1: {ctor: '[]'}
+		}
+	});
+var _mfdavid$indierank$Styles$infoTextStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(20)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$paddingTop(
+				_rtfeldman$elm_css$Css$px(20)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryDetailsColor),
+				_1: {ctor: '[]'}
+			}
+		}
+	},
+	_mfdavid$indierank$Styles$primaryFont);
+var _mfdavid$indierank$Styles$secondaryColor = _rtfeldman$elm_css$Css$hex('FFFFB3');
+var _mfdavid$indierank$Styles$primaryBackgroundStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$backgroundColor(_mfdavid$indierank$Styles$secondaryColor),
+	_1: {ctor: '[]'}
+};
+var _mfdavid$indierank$Styles$primaryColor = _rtfeldman$elm_css$Css$hex('F04F5E');
+var _mfdavid$indierank$Styles$buttonDisabledStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	_mfdavid$indierank$Styles$buttonEnabledStyle,
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$backgroundColor(_mfdavid$indierank$Styles$disabledDetailsColor),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$borderColor(_mfdavid$indierank$Styles$disabledDetailsColor),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryColor),
+				_1: {ctor: '[]'}
+			}
+		}
+	});
+var _mfdavid$indierank$Styles$titleStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(55)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$paddingBottom(
+				_rtfeldman$elm_css$Css$px(40)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryColor),
+				_1: {ctor: '[]'}
+			}
+		}
+	},
+	_mfdavid$indierank$Styles$primaryFont);
+var _mfdavid$indierank$Styles$subtitleStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(30)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$paddingTop(
+				_rtfeldman$elm_css$Css$px(30)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$paddingBottom(
+					_rtfeldman$elm_css$Css$px(30)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryColor),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	},
+	_mfdavid$indierank$Styles$primaryFont);
+var _mfdavid$indierank$Styles$errorStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(18)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$marginTop(
+				_rtfeldman$elm_css$Css$px(10)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryColor),
+				_1: {ctor: '[]'}
+			}
+		}
+	},
+	_mfdavid$indierank$Styles$primaryFont);
+var _mfdavid$indierank$Styles$styles = function (_p0) {
+	return _elm_lang$html$Html_Attributes$style(
+		_rtfeldman$elm_css$Css$asPairs(_p0));
+};
