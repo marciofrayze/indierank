@@ -1,0 +1,29 @@
+var _user$project$Routing$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _user$project$Routing$SearchResultRoute = function (a) {
+	return {ctor: 'SearchResultRoute', _0: a};
+};
+var _user$project$Routing$SearchRoute = {ctor: 'SearchRoute'};
+var _user$project$Routing$matchers = _evancz$url_parser$UrlParser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(_evancz$url_parser$UrlParser$map, _user$project$Routing$SearchRoute, _evancz$url_parser$UrlParser$top),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_evancz$url_parser$UrlParser$map,
+				_user$project$Routing$SearchResultRoute,
+				A2(
+					_evancz$url_parser$UrlParser_ops['</>'],
+					_evancz$url_parser$UrlParser$s('plate'),
+					_evancz$url_parser$UrlParser$string)),
+			_1: {ctor: '[]'}
+		}
+	});
+var _user$project$Routing$parseLocation = function (location) {
+	var _p0 = A2(_evancz$url_parser$UrlParser$parseHash, _user$project$Routing$matchers, location);
+	if (_p0.ctor === 'Just') {
+		return _p0._0;
+	} else {
+		return _user$project$Routing$NotFoundRoute;
+	}
+};

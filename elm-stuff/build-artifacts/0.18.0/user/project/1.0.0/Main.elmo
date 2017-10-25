@@ -41,71 +41,185 @@ var _user$project$Main$titleDiv = A2(
 		_0: _elm_lang$html$Html$text('IndieRank'),
 		_1: {ctor: '[]'}
 	});
-var _user$project$Main$resultDiv = A2(
-	_elm_lang$html$Html$div,
-	{ctor: '[]'},
-	{
-		ctor: '::',
-		_0: _user$project$Main$titleDiv,
-		_1: {
+var _user$project$Main$ratingDiv = function (rating) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
 			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$div,
-				{
-					ctor: '::',
-					_0: _user$project$Styles$styles(_user$project$Styles$subtitleStyle),
-					_1: {ctor: '[]'}
+			_0: _elm_lang$html$Html$text(rating.comment),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								'Score: ',
+								_elm_lang$core$Basics$toString(rating.score))),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$reviewsFoundText = function (ratingsSize) {
+	var _p0 = ratingsSize;
+	if (_p0 === 1) {
+		return 'Found 1 review.';
+	} else {
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'Found ',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(ratingsSize),
+				' reviews.'));
+	}
+};
+var _user$project$Main$resultDiv = function (searchResult) {
+	var ratingsLength = _elm_lang$core$Basics$toFloat(
+		_elm_lang$core$List$length(searchResult.ratings));
+	var averageScore = _elm_lang$core$Basics$toFloat(
+		_elm_lang$core$List$sum(
+			A2(
+				_elm_lang$core$List$map,
+				function (r) {
+					return r.score;
 				},
-				{
-					ctor: '::',
-					_0: _elm_lang$html$Html$text('RESULTS'),
-					_1: {ctor: '[]'}
-				}),
+				searchResult.ratings))) / ratingsLength;
+	var containsReviews = _elm_lang$core$Native_Utils.cmp(ratingsLength, 0) > 0;
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$titleDiv,
 			_1: {
 				ctor: '::',
 				_0: A2(
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _user$project$Styles$styles(_user$project$Styles$infoTextStyle),
+						_0: _user$project$Styles$styles(_user$project$Styles$subtitleStyle),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('No results found for this driver yet.'),
+						_0: _elm_lang$html$Html$text(searchResult.plate),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
 					ctor: '::',
 					_0: A2(
-						_elm_lang$html$Html$button,
+						_elm_lang$html$Html$div,
 						{
 							ctor: '::',
-							_0: _user$project$Styles$styles(
-								A2(_elm_lang$core$Basics_ops['++'], _user$project$Styles$buttonEnabledStyle, _user$project$Styles$smallMarginTopStyle)),
+							_0: _user$project$Styles$styles(_user$project$Styles$infoTextStyle),
 							_1: {ctor: '[]'}
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('Add review'),
+							_0: containsReviews ? _elm_lang$html$Html$text(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									'Average score: ',
+									_elm_lang$core$Basics$toString(averageScore))) : _elm_lang$html$Html$text('No results found for this driver yet.'),
 							_1: {ctor: '[]'}
 						}),
-					_1: {ctor: '[]'}
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _user$project$Styles$styles(_user$project$Styles$infoTextStyle),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_user$project$Main$reviewsFoundText(
+										_elm_lang$core$List$length(searchResult.ratings))),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _user$project$Styles$styles(_user$project$Styles$infoTextStyle),
+									_1: {ctor: '[]'}
+								},
+								A2(_elm_lang$core$List$map, _user$project$Main$ratingDiv, searchResult.ratings)),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: _user$project$Styles$styles(
+											A2(_elm_lang$core$Basics_ops['++'], _user$project$Styles$buttonEnabledStyle, _user$project$Styles$smallMarginTopStyle)),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('Add review'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
 				}
 			}
-		}
-	});
+		});
+};
 var _user$project$Main$validPlate = function (plate) {
 	return _elm_lang$core$Native_Utils.eq(
 		_elm_lang$core$String$length(plate),
 		8);
 };
+var _user$project$Main$httpErrorString = function (error) {
+	var _p1 = error;
+	switch (_p1.ctor) {
+		case 'BadUrl':
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
+		case 'Timeout':
+			return 'Http Timeout';
+		case 'NetworkError':
+			return 'Network Error';
+		case 'BadStatus':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Bad Http Status: ',
+				_elm_lang$core$Basics$toString(_p1._0.status.code));
+		default:
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Bad Http Payload: ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(_p1._0),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						' (',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(_p1._1.status.code),
+							')'))));
+	}
+};
 var _user$project$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _user$project$Main$Model = F6(
-	function (a, b, c, d, e, f) {
-		return {plate: a, isSearching: b, failedToGetRatings: c, failedDetails: d, searchResult: e, showResults: f};
+var _user$project$Main$Model = F7(
+	function (a, b, c, d, e, f, g) {
+		return {plate: a, isSearching: b, failedToGetRatings: c, failedDetails: d, searchResult: e, showResults: f, history: g};
 	});
 var _user$project$Main$SearchResult = F2(
 	function (a, b) {
@@ -113,7 +227,7 @@ var _user$project$Main$SearchResult = F2(
 	});
 var _user$project$Main$init = {
 	ctor: '_Tuple2',
-	_0: A6(
+	_0: A7(
 		_user$project$Main$Model,
 		'',
 		false,
@@ -123,7 +237,8 @@ var _user$project$Main$init = {
 			_user$project$Main$SearchResult,
 			'',
 			{ctor: '[]'}),
-		false),
+		false,
+		{ctor: '[]'}),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
 var _user$project$Main$Rating = F2(
@@ -168,20 +283,20 @@ var _user$project$Main$ShowRating = function (a) {
 	return {ctor: 'ShowRating', _0: a};
 };
 var _user$project$Main$getRatings = function (plate) {
-	var url = 'http://localhost:9393/fake';
+	var url = 'http://10.32.18.57:9393/fake';
 	var request = A2(_elm_lang$http$Http$get, url, _user$project$Main$decodeRatings);
 	return A2(_elm_lang$http$Http$send, _user$project$Main$ShowRating, request);
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p0 = msg;
-		switch (_p0.ctor) {
+		var _p2 = msg;
+		switch (_p2.ctor) {
 			case 'ChangePlate':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{plate: _p0._0, failedToGetRatings: false}),
+						{plate: _p2._0, failedToGetRatings: false}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'Search':
@@ -193,12 +308,12 @@ var _user$project$Main$update = F2(
 					_1: _user$project$Main$getRatings('abc1234')
 				};
 			default:
-				if (_p0._0.ctor === 'Ok') {
+				if (_p2._0.ctor === 'Ok') {
 					return {
 						ctor: '_Tuple2',
 						_0: _elm_lang$core$Native_Utils.update(
 							model,
-							{isSearching: false, failedToGetRatings: false, searchResult: _p0._0._0, showResults: true}),
+							{isSearching: false, failedToGetRatings: false, searchResult: _p2._0._0, showResults: true}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
 				} else {
@@ -209,7 +324,7 @@ var _user$project$Main$update = F2(
 							{
 								isSearching: false,
 								failedToGetRatings: true,
-								failedDetails: _elm_lang$core$Basics$toString(_p0._0._0)
+								failedDetails: _user$project$Main$httpErrorString(_p2._0._0)
 							}),
 						_1: _elm_lang$core$Platform_Cmd$none
 					};
@@ -383,7 +498,7 @@ var _user$project$Main$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: model.showResults ? _user$project$Main$resultDiv : A5(_user$project$Main$searchForm, model.plate, model.isSearching, model.failedToGetRatings, model.failedDetails, model.searchResult),
+			_0: model.showResults ? _user$project$Main$resultDiv(model.searchResult) : A5(_user$project$Main$searchForm, model.plate, model.isSearching, model.failedToGetRatings, model.failedDetails, model.searchResult),
 			_1: {ctor: '[]'}
 		});
 };

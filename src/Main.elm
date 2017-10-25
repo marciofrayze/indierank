@@ -5,6 +5,7 @@ import Html.Attributes exposing (autofocus, disabled, maxlength, placeholder, va
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Http
 import Json.Decode as Decode
+import Navigation
 import Styles exposing (buttonDisabledStyle, buttonEnabledStyle, centerStyle, centeredBlockStyle, errorStyle, infoTextStyle, marginTopStyle, plateEmptyInputStyle, plateInputStyle, primaryBackgroundStyle, primaryFont, smallMarginBottomStyle, smallMarginTopStyle, styles, subtitleStyle, titleStyle)
 
 
@@ -15,6 +16,7 @@ type alias Model =
     , failedDetails : String
     , searchResult : SearchResult
     , showResults : Bool
+    , history : List Navigation.Location
     }
 
 
@@ -32,7 +34,7 @@ type alias Rating =
 
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" False False "" (SearchResult "" []) False
+    ( Model "" False False "" (SearchResult "" []) False []
     , Cmd.none
     )
 
@@ -91,10 +93,33 @@ update msg model =
             ( { model
                 | isSearching = False
                 , failedToGetRatings = True
-                , failedDetails = toString errorDetails
+                , failedDetails = httpErrorString errorDetails
               }
             , Cmd.none
             )
+
+
+httpErrorString : Http.Error -> String
+httpErrorString error =
+    case error of
+        Http.BadUrl text ->
+            "Bad Url: " ++ text
+
+        Http.Timeout ->
+            "Http Timeout"
+
+        Http.NetworkError ->
+            "Network Error"
+
+        Http.BadStatus response ->
+            "Bad Http Status: " ++ toString response.status.code
+
+        Http.BadPayload message response ->
+            "Bad Http Payload: "
+                ++ toString message
+                ++ " ("
+                ++ toString response.status.code
+                ++ ")"
 
 
 
@@ -106,16 +131,36 @@ validPlate plate =
     String.length plate == 8
 
 
-resultDiv : Html.Html msg
-resultDiv =
+resultDiv : SearchResult -> Html.Html msg
+resultDiv searchResult =
+    let
+        ratingsLength =
+            toFloat (List.length searchResult.ratings)
+
+        averageScore =
+            -- TODO: Any better way to sum this?
+            toFloat (List.sum (List.map (\r -> r.score) searchResult.ratings)) / ratingsLength
+
+        containsReviews =
+            ratingsLength > 0
+    in
     div []
         [ titleDiv
         , div [ styles subtitleStyle ]
-            [ Html.text "RESULTS"
+            [ Html.text searchResult.plate
             ]
         , div [ styles infoTextStyle ]
-            [ Html.text "No results found for this driver yet."
+            [ if containsReviews then
+                Html.text ("Average score: " ++ toString averageScore)
+              else
+                Html.text "No results found for this driver yet."
             ]
+        , div
+            [ styles infoTextStyle ]
+            [ Html.text (reviewsFoundText (List.length searchResult.ratings))
+            ]
+        , div [ styles infoTextStyle ]
+            (List.map ratingDiv searchResult.ratings)
         , button
             [ styles
                 (buttonEnabledStyle
@@ -123,6 +168,26 @@ resultDiv =
                 )
             ]
             [ Html.text "Add review" ]
+        ]
+
+
+reviewsFoundText : number -> String
+reviewsFoundText ratingsSize =
+    case ratingsSize of
+        1 ->
+            "Found 1 review."
+
+        _ ->
+            "Found " ++ toString ratingsSize ++ " reviews."
+
+
+ratingDiv : Rating -> Html.Html msg
+ratingDiv rating =
+    div []
+        [ Html.text rating.comment
+        , div []
+            [ Html.text ("Score: " ++ toString rating.score)
+            ]
         ]
 
 
@@ -230,7 +295,7 @@ getRatings plate =
     let
         -- TODO: Insert plate on the url
         url =
-            "http://localhost:9393/fake"
+            "http://10.32.18.57:9393/fake"
 
         -- Return exemple: {"plate":"ABC-1234","ratings":[{"comment":"really bad driver","score":1}]}
         request =
@@ -262,7 +327,7 @@ view model =
             (marginTopStyle ++ centeredBlockStyle)
         ]
         [ if model.showResults then
-            resultDiv
+            resultDiv model.searchResult
           else
             searchForm model.plate model.isSearching model.failedToGetRatings model.failedDetails model.searchResult
         ]

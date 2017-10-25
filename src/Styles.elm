@@ -42,6 +42,7 @@ buttonStyle =
     , textAlign center
     , padding (px 10)
     , borderRadius (px 5)
+    , outline none
     ]
 
 

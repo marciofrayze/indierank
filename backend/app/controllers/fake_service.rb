@@ -9,17 +9,24 @@ class FakeService < RackStep::Controller
     ranking['plate'] = 'ABC-1234'
     ranking['ratings'] = []
 
-    rating = {}
+    rating1 = {}
 
-    rating['comment'] = 'really bad driver'
-    rating['score'] = 1
+    rating1['comment'] = 'really bad driver'
+    rating1['score'] = 1
 
-    ranking['ratings'] << rating
+    rating2 = {}    
+    rating2['comment'] = 'Fine driver. No problems.'
+    rating2['score'] = 5
 
+    ranking['ratings'] << rating1
+    ranking['ratings'] << rating2
+
+    response.header['Access-Control-Allow-Credentials'] = 'true'
     response.header['Access-Control-Allow-Origin'] = '*'
     response.header['Access-Control-Allow-Headers'] = 'origin, content-type, accept, authorization, bearer'
-    response.header['Access-Control-Allow-Methods'] = 'GET, OPTIONS, HEAD, POST, PUT'
-    response.header['Access-Control-Max-Age'] = '1209600'
+    response.header['Access-Control-Allow-Methods'] = 'GET, PUT, DELETE, HEAD, OPTIONS'
+
+    #response.header['Access-Control-Max-Age'] = '1209600'
 
     response.body = ranking.to_json
   end
