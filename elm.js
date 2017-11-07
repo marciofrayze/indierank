@@ -9928,6 +9928,257 @@ var _elm_lang$navigation$Navigation$onEffects = F4(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Navigation'] = {pkg: 'elm-lang/navigation', init: _elm_lang$navigation$Navigation$init, onEffects: _elm_lang$navigation$Navigation$onEffects, onSelfMsg: _elm_lang$navigation$Navigation$onSelfMsg, tag: 'fx', cmdMap: _elm_lang$navigation$Navigation$cmdMap, subMap: _elm_lang$navigation$Navigation$subMap};
 
+var _evancz$url_parser$UrlParser$toKeyValuePair = function (segment) {
+	var _p0 = A2(_elm_lang$core$String$split, '=', segment);
+	if (((_p0.ctor === '::') && (_p0._1.ctor === '::')) && (_p0._1._1.ctor === '[]')) {
+		return A3(
+			_elm_lang$core$Maybe$map2,
+			F2(
+				function (v0, v1) {
+					return {ctor: '_Tuple2', _0: v0, _1: v1};
+				}),
+			_elm_lang$http$Http$decodeUri(_p0._0),
+			_elm_lang$http$Http$decodeUri(_p0._1._0));
+	} else {
+		return _elm_lang$core$Maybe$Nothing;
+	}
+};
+var _evancz$url_parser$UrlParser$parseParams = function (queryString) {
+	return _elm_lang$core$Dict$fromList(
+		A2(
+			_elm_lang$core$List$filterMap,
+			_evancz$url_parser$UrlParser$toKeyValuePair,
+			A2(
+				_elm_lang$core$String$split,
+				'&',
+				A2(_elm_lang$core$String$dropLeft, 1, queryString))));
+};
+var _evancz$url_parser$UrlParser$splitUrl = function (url) {
+	var _p1 = A2(_elm_lang$core$String$split, '/', url);
+	if ((_p1.ctor === '::') && (_p1._0 === '')) {
+		return _p1._1;
+	} else {
+		return _p1;
+	}
+};
+var _evancz$url_parser$UrlParser$parseHelp = function (states) {
+	parseHelp:
+	while (true) {
+		var _p2 = states;
+		if (_p2.ctor === '[]') {
+			return _elm_lang$core$Maybe$Nothing;
+		} else {
+			var _p4 = _p2._0;
+			var _p3 = _p4.unvisited;
+			if (_p3.ctor === '[]') {
+				return _elm_lang$core$Maybe$Just(_p4.value);
+			} else {
+				if ((_p3._0 === '') && (_p3._1.ctor === '[]')) {
+					return _elm_lang$core$Maybe$Just(_p4.value);
+				} else {
+					var _v4 = _p2._1;
+					states = _v4;
+					continue parseHelp;
+				}
+			}
+		}
+	}
+};
+var _evancz$url_parser$UrlParser$parse = F3(
+	function (_p5, url, params) {
+		var _p6 = _p5;
+		return _evancz$url_parser$UrlParser$parseHelp(
+			_p6._0(
+				{
+					visited: {ctor: '[]'},
+					unvisited: _evancz$url_parser$UrlParser$splitUrl(url),
+					params: params,
+					value: _elm_lang$core$Basics$identity
+				}));
+	});
+var _evancz$url_parser$UrlParser$parseHash = F2(
+	function (parser, location) {
+		return A3(
+			_evancz$url_parser$UrlParser$parse,
+			parser,
+			A2(_elm_lang$core$String$dropLeft, 1, location.hash),
+			_evancz$url_parser$UrlParser$parseParams(location.search));
+	});
+var _evancz$url_parser$UrlParser$parsePath = F2(
+	function (parser, location) {
+		return A3(
+			_evancz$url_parser$UrlParser$parse,
+			parser,
+			location.pathname,
+			_evancz$url_parser$UrlParser$parseParams(location.search));
+	});
+var _evancz$url_parser$UrlParser$intParamHelp = function (maybeValue) {
+	var _p7 = maybeValue;
+	if (_p7.ctor === 'Nothing') {
+		return _elm_lang$core$Maybe$Nothing;
+	} else {
+		return _elm_lang$core$Result$toMaybe(
+			_elm_lang$core$String$toInt(_p7._0));
+	}
+};
+var _evancz$url_parser$UrlParser$mapHelp = F2(
+	function (func, _p8) {
+		var _p9 = _p8;
+		return {
+			visited: _p9.visited,
+			unvisited: _p9.unvisited,
+			params: _p9.params,
+			value: func(_p9.value)
+		};
+	});
+var _evancz$url_parser$UrlParser$State = F4(
+	function (a, b, c, d) {
+		return {visited: a, unvisited: b, params: c, value: d};
+	});
+var _evancz$url_parser$UrlParser$Parser = function (a) {
+	return {ctor: 'Parser', _0: a};
+};
+var _evancz$url_parser$UrlParser$s = function (str) {
+	return _evancz$url_parser$UrlParser$Parser(
+		function (_p10) {
+			var _p11 = _p10;
+			var _p12 = _p11.unvisited;
+			if (_p12.ctor === '[]') {
+				return {ctor: '[]'};
+			} else {
+				var _p13 = _p12._0;
+				return _elm_lang$core$Native_Utils.eq(_p13, str) ? {
+					ctor: '::',
+					_0: A4(
+						_evancz$url_parser$UrlParser$State,
+						{ctor: '::', _0: _p13, _1: _p11.visited},
+						_p12._1,
+						_p11.params,
+						_p11.value),
+					_1: {ctor: '[]'}
+				} : {ctor: '[]'};
+			}
+		});
+};
+var _evancz$url_parser$UrlParser$custom = F2(
+	function (tipe, stringToSomething) {
+		return _evancz$url_parser$UrlParser$Parser(
+			function (_p14) {
+				var _p15 = _p14;
+				var _p16 = _p15.unvisited;
+				if (_p16.ctor === '[]') {
+					return {ctor: '[]'};
+				} else {
+					var _p18 = _p16._0;
+					var _p17 = stringToSomething(_p18);
+					if (_p17.ctor === 'Ok') {
+						return {
+							ctor: '::',
+							_0: A4(
+								_evancz$url_parser$UrlParser$State,
+								{ctor: '::', _0: _p18, _1: _p15.visited},
+								_p16._1,
+								_p15.params,
+								_p15.value(_p17._0)),
+							_1: {ctor: '[]'}
+						};
+					} else {
+						return {ctor: '[]'};
+					}
+				}
+			});
+	});
+var _evancz$url_parser$UrlParser$string = A2(_evancz$url_parser$UrlParser$custom, 'STRING', _elm_lang$core$Result$Ok);
+var _evancz$url_parser$UrlParser$int = A2(_evancz$url_parser$UrlParser$custom, 'NUMBER', _elm_lang$core$String$toInt);
+var _evancz$url_parser$UrlParser_ops = _evancz$url_parser$UrlParser_ops || {};
+_evancz$url_parser$UrlParser_ops['</>'] = F2(
+	function (_p20, _p19) {
+		var _p21 = _p20;
+		var _p22 = _p19;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (state) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					_p22._0,
+					_p21._0(state));
+			});
+	});
+var _evancz$url_parser$UrlParser$map = F2(
+	function (subValue, _p23) {
+		var _p24 = _p23;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (_p25) {
+				var _p26 = _p25;
+				return A2(
+					_elm_lang$core$List$map,
+					_evancz$url_parser$UrlParser$mapHelp(_p26.value),
+					_p24._0(
+						{visited: _p26.visited, unvisited: _p26.unvisited, params: _p26.params, value: subValue}));
+			});
+	});
+var _evancz$url_parser$UrlParser$oneOf = function (parsers) {
+	return _evancz$url_parser$UrlParser$Parser(
+		function (state) {
+			return A2(
+				_elm_lang$core$List$concatMap,
+				function (_p27) {
+					var _p28 = _p27;
+					return _p28._0(state);
+				},
+				parsers);
+		});
+};
+var _evancz$url_parser$UrlParser$top = _evancz$url_parser$UrlParser$Parser(
+	function (state) {
+		return {
+			ctor: '::',
+			_0: state,
+			_1: {ctor: '[]'}
+		};
+	});
+var _evancz$url_parser$UrlParser_ops = _evancz$url_parser$UrlParser_ops || {};
+_evancz$url_parser$UrlParser_ops['<?>'] = F2(
+	function (_p30, _p29) {
+		var _p31 = _p30;
+		var _p32 = _p29;
+		return _evancz$url_parser$UrlParser$Parser(
+			function (state) {
+				return A2(
+					_elm_lang$core$List$concatMap,
+					_p32._0,
+					_p31._0(state));
+			});
+	});
+var _evancz$url_parser$UrlParser$QueryParser = function (a) {
+	return {ctor: 'QueryParser', _0: a};
+};
+var _evancz$url_parser$UrlParser$customParam = F2(
+	function (key, func) {
+		return _evancz$url_parser$UrlParser$QueryParser(
+			function (_p33) {
+				var _p34 = _p33;
+				var _p35 = _p34.params;
+				return {
+					ctor: '::',
+					_0: A4(
+						_evancz$url_parser$UrlParser$State,
+						_p34.visited,
+						_p34.unvisited,
+						_p35,
+						_p34.value(
+							func(
+								A2(_elm_lang$core$Dict$get, key, _p35)))),
+					_1: {ctor: '[]'}
+				};
+			});
+	});
+var _evancz$url_parser$UrlParser$stringParam = function (name) {
+	return A2(_evancz$url_parser$UrlParser$customParam, name, _elm_lang$core$Basics$identity);
+};
+var _evancz$url_parser$UrlParser$intParam = function (name) {
+	return A2(_evancz$url_parser$UrlParser$customParam, name, _evancz$url_parser$UrlParser$intParamHelp);
+};
+
 var _rtfeldman$elm_css_util$Css_Helpers$toCssIdentifier = function (identifier) {
 	return A4(
 		_elm_lang$core$Regex$replace,
@@ -14929,6 +15180,60 @@ var _mfdavid$indierank$Styles$plateEmptyInputStyle = {
 		_rtfeldman$elm_css$Css$px(22)),
 	_1: {ctor: '[]'}
 };
+var _mfdavid$indierank$Styles$reviewInputStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$height(
+		_rtfeldman$elm_css$Css$px(40)),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$width(
+			_rtfeldman$elm_css$Css$pct(70)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$padding(
+				_rtfeldman$elm_css$Css$px(15)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$fontSize(
+					_rtfeldman$elm_css$Css$px(40)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$outline(_rtfeldman$elm_css$Css$none),
+					_1: {ctor: '[]'}
+				}
+			}
+		}
+	}
+};
+var _mfdavid$indierank$Styles$starsSelectStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$height(
+		_rtfeldman$elm_css$Css$px(50)),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$width(
+			_rtfeldman$elm_css$Css$px(220)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$padding(
+				_rtfeldman$elm_css$Css$px(2)),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$fontSize(
+					_rtfeldman$elm_css$Css$px(32)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$outline(_rtfeldman$elm_css$Css$none),
+					_1: {
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$textAlignLast(_rtfeldman$elm_css$Css$center),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
 var _mfdavid$indierank$Styles$plateInputStyle = {
 	ctor: '::',
 	_0: _rtfeldman$elm_css$Css$height(
@@ -14936,7 +15241,7 @@ var _mfdavid$indierank$Styles$plateInputStyle = {
 	_1: {
 		ctor: '::',
 		_0: _rtfeldman$elm_css$Css$width(
-			_rtfeldman$elm_css$Css$px(190)),
+			_rtfeldman$elm_css$Css$px(195)),
 		_1: {
 			ctor: '::',
 			_0: _rtfeldman$elm_css$Css$padding(
@@ -14980,9 +15285,14 @@ var _mfdavid$indierank$Styles$blockStyle = {
 var _mfdavid$indierank$Styles$centerStyle = {
 	ctor: '::',
 	_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
-	_1: {ctor: '[]'}
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$verticalAlign(_rtfeldman$elm_css$Css$middle),
+		_1: {ctor: '[]'}
+	}
 };
 var _mfdavid$indierank$Styles$centeredBlockStyle = A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$blockStyle, _mfdavid$indierank$Styles$centerStyle);
+var _mfdavid$indierank$Styles$alertDetailsColor = _rtfeldman$elm_css$Css$hex('FF9800');
 var _mfdavid$indierank$Styles$disabledDetailsColor = _rtfeldman$elm_css$Css$hex('D3D3D3');
 var _mfdavid$indierank$Styles$secondaryDetailsColor = _rtfeldman$elm_css$Css$hex('fff');
 var _mfdavid$indierank$Styles$buttonStyle = {
@@ -15014,12 +15324,52 @@ var _mfdavid$indierank$Styles$buttonStyle = {
 	}
 };
 var _mfdavid$indierank$Styles$primaryDetailsColor = _rtfeldman$elm_css$Css$hex('ed4664');
+var _mfdavid$indierank$Styles$linkStyle = {
+	ctor: '::',
+	_0: _rtfeldman$elm_css$Css$color(_mfdavid$indierank$Styles$primaryDetailsColor),
+	_1: {
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$fontSize(
+			_rtfeldman$elm_css$Css$px(25)),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$textAlign(_rtfeldman$elm_css$Css$center),
+			_1: {
+				ctor: '::',
+				_0: _rtfeldman$elm_css$Css$padding(
+					_rtfeldman$elm_css$Css$px(10)),
+				_1: {
+					ctor: '::',
+					_0: _rtfeldman$elm_css$Css$borderRadius(
+						_rtfeldman$elm_css$Css$px(5)),
+					_1: {
+						ctor: '::',
+						_0: _rtfeldman$elm_css$Css$outline(_rtfeldman$elm_css$Css$none),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	}
+};
 var _mfdavid$indierank$Styles$buttonEnabledStyle = A2(
 	_elm_lang$core$Basics_ops['++'],
 	_mfdavid$indierank$Styles$buttonStyle,
 	{
 		ctor: '::',
 		_0: _rtfeldman$elm_css$Css$backgroundColor(_mfdavid$indierank$Styles$primaryDetailsColor),
+		_1: {
+			ctor: '::',
+			_0: _rtfeldman$elm_css$Css$borderColor(_mfdavid$indierank$Styles$primaryDetailsColor),
+			_1: {ctor: '[]'}
+		}
+	});
+var _mfdavid$indierank$Styles$cancelButtonEnabledStyle = A2(
+	_elm_lang$core$Basics_ops['++'],
+	_mfdavid$indierank$Styles$buttonStyle,
+	{
+		ctor: '::',
+		_0: _rtfeldman$elm_css$Css$backgroundColor(_mfdavid$indierank$Styles$alertDetailsColor),
 		_1: {
 			ctor: '::',
 			_0: _rtfeldman$elm_css$Css$borderColor(_mfdavid$indierank$Styles$primaryDetailsColor),
@@ -15131,6 +15481,78 @@ var _mfdavid$indierank$Styles$styles = function (_p0) {
 		_rtfeldman$elm_css$Css$asPairs(_p0));
 };
 
+var _mfdavid$indierank$Router$ReviewAdded = function (a) {
+	return {ctor: 'ReviewAdded', _0: a};
+};
+var _mfdavid$indierank$Router$AddReviewRoute = function (a) {
+	return {ctor: 'AddReviewRoute', _0: a};
+};
+var _mfdavid$indierank$Router$AboutRoute = {ctor: 'AboutRoute'};
+var _mfdavid$indierank$Router$NotFoundRoute = {ctor: 'NotFoundRoute'};
+var _mfdavid$indierank$Router$SearchResultRoute = function (a) {
+	return {ctor: 'SearchResultRoute', _0: a};
+};
+var _mfdavid$indierank$Router$SearchRoute = {ctor: 'SearchRoute'};
+var _mfdavid$indierank$Router$matchers = _evancz$url_parser$UrlParser$oneOf(
+	{
+		ctor: '::',
+		_0: A2(_evancz$url_parser$UrlParser$map, _mfdavid$indierank$Router$SearchRoute, _evancz$url_parser$UrlParser$top),
+		_1: {
+			ctor: '::',
+			_0: A2(
+				_evancz$url_parser$UrlParser$map,
+				_mfdavid$indierank$Router$AboutRoute,
+				_evancz$url_parser$UrlParser$s('about')),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_evancz$url_parser$UrlParser$map,
+					_mfdavid$indierank$Router$SearchResultRoute,
+					A2(
+						_evancz$url_parser$UrlParser_ops['</>'],
+						_evancz$url_parser$UrlParser$s('plate'),
+						_evancz$url_parser$UrlParser$string)),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_evancz$url_parser$UrlParser$map,
+						_mfdavid$indierank$Router$AddReviewRoute,
+						A2(
+							_evancz$url_parser$UrlParser_ops['</>'],
+							_evancz$url_parser$UrlParser$s('review'),
+							_evancz$url_parser$UrlParser$string)),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_evancz$url_parser$UrlParser$map,
+							_mfdavid$indierank$Router$ReviewAdded,
+							A2(
+								_evancz$url_parser$UrlParser_ops['</>'],
+								_evancz$url_parser$UrlParser$s('added'),
+								_evancz$url_parser$UrlParser$string)),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		}
+	});
+var _mfdavid$indierank$Router$parseLocation = function (location) {
+	var _p0 = A2(_evancz$url_parser$UrlParser$parsePath, _mfdavid$indierank$Router$matchers, location);
+	if (_p0.ctor === 'Just') {
+		return _p0._0;
+	} else {
+		return _mfdavid$indierank$Router$NotFoundRoute;
+	}
+};
+
+var _mfdavid$indierank$Main$notFoundDiv = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _elm_lang$html$Html$text('404 - Page not found.'),
+		_1: {ctor: '[]'}
+	});
 var _mfdavid$indierank$Main$formatPlate = function (plate) {
 	var validPlateNumbers = '1234567890';
 	var isValidPlateNumber = function ($char) {
@@ -15199,6 +15621,36 @@ var _mfdavid$indierank$Main$ratingDiv = function (rating) {
 			}
 		});
 };
+var _mfdavid$indierank$Main$isValidReview = F2(
+	function (score, description) {
+		return A2(
+			_elm_lang$core$List$member,
+			score,
+			{
+				ctor: '::',
+				_0: '1',
+				_1: {
+					ctor: '::',
+					_0: '2',
+					_1: {
+						ctor: '::',
+						_0: '3',
+						_1: {
+							ctor: '::',
+							_0: '4',
+							_1: {
+								ctor: '::',
+								_0: '5',
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}
+			}) && (_elm_lang$core$Native_Utils.cmp(
+			_elm_lang$core$String$length(
+				_elm_lang$core$String$trim(description)),
+			5) > 0);
+	});
 var _mfdavid$indierank$Main$reviewsFoundText = function (ratingsSize) {
 	var _p0 = ratingsSize;
 	if (_p0 === 1) {
@@ -15213,6 +15665,372 @@ var _mfdavid$indierank$Main$reviewsFoundText = function (ratingsSize) {
 				' reviews.'));
 	}
 };
+var _mfdavid$indierank$Main$isValidPlate = function (plate) {
+	return _elm_lang$core$Native_Utils.eq(
+		_elm_lang$core$String$length(plate),
+		8);
+};
+var _mfdavid$indierank$Main$httpErrorString = function (error) {
+	var _p1 = error;
+	switch (_p1.ctor) {
+		case 'BadUrl':
+			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
+		case 'Timeout':
+			return 'Http Timeout';
+		case 'NetworkError':
+			return 'Network Error';
+		case 'BadStatus':
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Bad Http Status: ',
+				_elm_lang$core$Basics$toString(_p1._0.status.code));
+		default:
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				'Bad Http Payload: ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(_p1._0),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						' (',
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							_elm_lang$core$Basics$toString(_p1._1.status.code),
+							')'))));
+	}
+};
+var _mfdavid$indierank$Main$stateBasedOnURL = F2(
+	function (location, model) {
+		var _p2 = _mfdavid$indierank$Router$parseLocation(location);
+		switch (_p2.ctor) {
+			case 'SearchRoute':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentRoute: _mfdavid$indierank$Router$SearchRoute, requestFailed: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'SearchResultRoute':
+				var _p3 = _p2._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							currentRoute: _mfdavid$indierank$Router$SearchResultRoute(_p3),
+							requestFailed: false,
+							plate: _p3
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'AboutRoute':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							currentRoute: _mfdavid$indierank$Router$AboutRoute,
+							requestFailed: true,
+							failedDetails: _elm_lang$core$Basics$toString(
+								_mfdavid$indierank$Router$parseLocation(location))
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'AddReviewRoute':
+				var _p4 = _p2._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							currentRoute: _mfdavid$indierank$Router$AddReviewRoute(_p4),
+							plate: _p4
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'ReviewAdded':
+				var _p5 = _p2._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							currentRoute: _mfdavid$indierank$Router$ReviewAdded(_p5),
+							plate: _p5
+						}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{processingRequest: false, requestFailed: false, failedDetails: '', currentRoute: _mfdavid$indierank$Router$NotFoundRoute}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _mfdavid$indierank$Main$subscriptions = function (model) {
+	return _elm_lang$core$Platform_Sub$none;
+};
+var _mfdavid$indierank$Main$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return {plate: a, reviewScore: b, reviewComment: c, processingRequest: d, requestFailed: e, failedDetails: f, searchResult: g, showResults: h, history: i, currentRoute: j};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _mfdavid$indierank$Main$AddReviewResult = F3(
+	function (a, b, c) {
+		return {plate: a, score: b, comment: c};
+	});
+var _mfdavid$indierank$Main$decodePostReview = A4(
+	_elm_lang$core$Json_Decode$map3,
+	_mfdavid$indierank$Main$AddReviewResult,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'plate',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'score',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$int),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'comment',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string));
+var _mfdavid$indierank$Main$SearchResult = F2(
+	function (a, b) {
+		return {plate: a, ratings: b};
+	});
+var _mfdavid$indierank$Main$defaultModel = _mfdavid$indierank$Main$Model('')('')('')(false)(false)('')(
+	A2(
+		_mfdavid$indierank$Main$SearchResult,
+		'',
+		{ctor: '[]'}))(false)(
+	{ctor: '[]'})(_mfdavid$indierank$Router$NotFoundRoute);
+var _mfdavid$indierank$Main$init = function (location) {
+	return A2(_mfdavid$indierank$Main$stateBasedOnURL, location, _mfdavid$indierank$Main$defaultModel);
+};
+var _mfdavid$indierank$Main$Rating = F2(
+	function (a, b) {
+		return {score: a, comment: b};
+	});
+var _mfdavid$indierank$Main$decodeRating = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_mfdavid$indierank$Main$Rating,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'score',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$int),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'comment',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string));
+var _mfdavid$indierank$Main$decodeRatings = A3(
+	_elm_lang$core$Json_Decode$map2,
+	_mfdavid$indierank$Main$SearchResult,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'plate',
+			_1: {ctor: '[]'}
+		},
+		_elm_lang$core$Json_Decode$string),
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'ratings',
+		_elm_lang$core$Json_Decode$list(_mfdavid$indierank$Main$decodeRating)));
+var _mfdavid$indierank$Main$ShowReviewAdded = function (a) {
+	return {ctor: 'ShowReviewAdded', _0: a};
+};
+var _mfdavid$indierank$Main$postReview = F3(
+	function (plate, reviewScore, reviewComment) {
+		var url = A2(
+			_elm_lang$core$Basics_ops['++'],
+			'http://10.32.18.57:9393/add?plate=',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				plate,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'&score=',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						reviewScore,
+						A2(_elm_lang$core$Basics_ops['++'], '&comment=', reviewComment)))));
+		var request = A3(_elm_lang$http$Http$post, url, _elm_lang$http$Http$emptyBody, _mfdavid$indierank$Main$decodePostReview);
+		return A2(_elm_lang$http$Http$send, _mfdavid$indierank$Main$ShowReviewAdded, request);
+	});
+var _mfdavid$indierank$Main$ShowRating = function (a) {
+	return {ctor: 'ShowRating', _0: a};
+};
+var _mfdavid$indierank$Main$getRatings = function (plate) {
+	var url = A2(_elm_lang$core$Basics_ops['++'], 'http://10.32.18.57:9393?plate=', plate);
+	var request = A2(_elm_lang$http$Http$get, url, _mfdavid$indierank$Main$decodeRatings);
+	return A2(_elm_lang$http$Http$send, _mfdavid$indierank$Main$ShowRating, request);
+};
+var _mfdavid$indierank$Main$update = F2(
+	function (msg, model) {
+		var _p6 = msg;
+		switch (_p6.ctor) {
+			case 'ChangePlate':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{plate: _p6._0, requestFailed: false}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'Search':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{processingRequest: true, requestFailed: false}),
+					_1: _mfdavid$indierank$Main$getRatings(_p6._0)
+				};
+			case 'UrlChange':
+				return A2(_mfdavid$indierank$Main$stateBasedOnURL, _p6._0, model);
+			case 'ShowRating':
+				if (_p6._0.ctor === 'Ok') {
+					var _p7 = _p6._0._0;
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{processingRequest: false, requestFailed: false, searchResult: _p7, showResults: true}),
+						_1: _elm_lang$navigation$Navigation$newUrl(
+							A2(_elm_lang$core$Basics_ops['++'], '/plate/', _p7.plate))
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								processingRequest: false,
+								requestFailed: true,
+								failedDetails: _mfdavid$indierank$Main$httpErrorString(_p6._0._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'ShowReviewAdded':
+				if (_p6._0.ctor === 'Ok') {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{processingRequest: false, requestFailed: false}),
+						_1: _elm_lang$navigation$Navigation$newUrl(
+							A2(_elm_lang$core$Basics_ops['++'], '/added/', _p6._0._0.plate))
+					};
+				} else {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.update(
+							model,
+							{
+								processingRequest: false,
+								requestFailed: true,
+								failedDetails: _mfdavid$indierank$Main$httpErrorString(_p6._0._0)
+							}),
+						_1: _elm_lang$core$Platform_Cmd$none
+					};
+				}
+			case 'Home':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{processingRequest: false, requestFailed: false, failedDetails: '', plate: '', currentRoute: _mfdavid$indierank$Router$SearchRoute}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			case 'AddReview':
+				var _p8 = _p6._0;
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{
+							plate: _p8,
+							currentRoute: _mfdavid$indierank$Router$AddReviewRoute(_p8)
+						}),
+					_1: _elm_lang$navigation$Navigation$newUrl(
+						A2(_elm_lang$core$Basics_ops['++'], '/review/', _p8))
+				};
+			case 'SendReview':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{processingRequest: true}),
+					_1: A3(_mfdavid$indierank$Main$postReview, _p6._0, _p6._1, _p6._2)
+				};
+			case 'ChangeReviewScore':
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{reviewScore: _p6._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{reviewComment: _p6._0}),
+					_1: _elm_lang$core$Platform_Cmd$none
+				};
+		}
+	});
+var _mfdavid$indierank$Main$SendReview = F3(
+	function (a, b, c) {
+		return {ctor: 'SendReview', _0: a, _1: b, _2: c};
+	});
+var _mfdavid$indierank$Main$AddReview = function (a) {
+	return {ctor: 'AddReview', _0: a};
+};
+var _mfdavid$indierank$Main$Home = {ctor: 'Home'};
 var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 	var ratingsLength = _elm_lang$core$Basics$toFloat(
 		_elm_lang$core$List$length(searchResult.ratings));
@@ -15274,9 +16092,9 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 							},
 							{
 								ctor: '::',
-								_0: _elm_lang$html$Html$text(
+								_0: containsReviews ? _elm_lang$html$Html$text(
 									_mfdavid$indierank$Main$reviewsFoundText(
-										_elm_lang$core$List$length(searchResult.ratings))),
+										_elm_lang$core$List$length(searchResult.ratings))) : _elm_lang$html$Html$text(''),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -15297,14 +16115,49 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 										ctor: '::',
 										_0: _mfdavid$indierank$Styles$styles(
 											A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$buttonEnabledStyle, _mfdavid$indierank$Styles$smallMarginTopStyle)),
-										_1: {ctor: '[]'}
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(
+												_mfdavid$indierank$Main$AddReview(searchResult.plate)),
+											_1: {ctor: '[]'}
+										}
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Add review'),
+										_0: _elm_lang$html$Html$text('add review'),
 										_1: {ctor: '[]'}
 									}),
-								_1: {ctor: '[]'}
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$br,
+										{ctor: '[]'},
+										{ctor: '[]'}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$button,
+											{
+												ctor: '::',
+												_0: _mfdavid$indierank$Styles$styles(
+													A2(
+														_elm_lang$core$Basics_ops['++'],
+														_mfdavid$indierank$Styles$cancelButtonEnabledStyle,
+														A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('another search'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}
 							}
 						}
 					}
@@ -15312,182 +16165,140 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 			}
 		});
 };
-var _mfdavid$indierank$Main$validPlate = function (plate) {
-	return _elm_lang$core$Native_Utils.eq(
-		_elm_lang$core$String$length(plate),
-		8);
-};
-var _mfdavid$indierank$Main$httpErrorString = function (error) {
-	var _p1 = error;
-	switch (_p1.ctor) {
-		case 'BadUrl':
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
-		case 'Timeout':
-			return 'Http Timeout';
-		case 'NetworkError':
-			return 'Network Error';
-		case 'BadStatus':
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				'Bad Http Status: ',
-				_elm_lang$core$Basics$toString(_p1._0.status.code));
-		default:
-			return A2(
-				_elm_lang$core$Basics_ops['++'],
-				'Bad Http Payload: ',
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(_p1._0),
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						' (',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$Basics$toString(_p1._1.status.code),
-							')'))));
-	}
-};
-var _mfdavid$indierank$Main$subscriptions = function (model) {
-	return _elm_lang$core$Platform_Sub$none;
-};
-var _mfdavid$indierank$Main$Model = F7(
-	function (a, b, c, d, e, f, g) {
-		return {plate: a, isSearching: b, failedToGetRatings: c, failedDetails: d, searchResult: e, showResults: f, history: g};
-	});
-var _mfdavid$indierank$Main$SearchResult = F2(
-	function (a, b) {
-		return {plate: a, ratings: b};
-	});
-var _mfdavid$indierank$Main$init = {
-	ctor: '_Tuple2',
-	_0: A7(
-		_mfdavid$indierank$Main$Model,
-		'',
-		false,
-		false,
-		'',
-		A2(
-			_mfdavid$indierank$Main$SearchResult,
-			'',
-			{ctor: '[]'}),
-		false,
-		{ctor: '[]'}),
-	_1: _elm_lang$core$Platform_Cmd$none
-};
-var _mfdavid$indierank$Main$Rating = F2(
-	function (a, b) {
-		return {score: a, comment: b};
-	});
-var _mfdavid$indierank$Main$decodeRating = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_mfdavid$indierank$Main$Rating,
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
+var _mfdavid$indierank$Main$aboutPage = A2(
+	_elm_lang$html$Html$div,
+	{ctor: '[]'},
+	{
+		ctor: '::',
+		_0: _mfdavid$indierank$Main$titleDiv,
+		_1: {
 			ctor: '::',
-			_0: 'score',
-			_1: {ctor: '[]'}
-		},
-		_elm_lang$core$Json_Decode$int),
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'comment',
-			_1: {ctor: '[]'}
-		},
-		_elm_lang$core$Json_Decode$string));
-var _mfdavid$indierank$Main$decodeRatings = A3(
-	_elm_lang$core$Json_Decode$map2,
-	_mfdavid$indierank$Main$SearchResult,
-	A2(
-		_elm_lang$core$Json_Decode$at,
-		{
-			ctor: '::',
-			_0: 'plate',
-			_1: {ctor: '[]'}
-		},
-		_elm_lang$core$Json_Decode$string),
-	A2(
-		_elm_lang$core$Json_Decode$field,
-		'ratings',
-		_elm_lang$core$Json_Decode$list(_mfdavid$indierank$Main$decodeRating)));
-var _mfdavid$indierank$Main$ShowRating = function (a) {
-	return {ctor: 'ShowRating', _0: a};
-};
-var _mfdavid$indierank$Main$getRatings = function (plate) {
-	var url = 'http://10.32.18.57:9393/fake';
-	var request = A2(_elm_lang$http$Http$get, url, _mfdavid$indierank$Main$decodeRatings);
-	return A2(_elm_lang$http$Http$send, _mfdavid$indierank$Main$ShowRating, request);
-};
-var _mfdavid$indierank$Main$update = F2(
-	function (msg, model) {
-		var _p2 = msg;
-		switch (_p2.ctor) {
-			case 'ChangePlate':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{plate: _p2._0, failedToGetRatings: false}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Search':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{isSearching: true, failedToGetRatings: false}),
-					_1: _mfdavid$indierank$Main$getRatings('abc1234')
-				};
-			default:
-				if (_p2._0.ctor === 'Ok') {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{isSearching: false, failedToGetRatings: false, searchResult: _p2._0._0, showResults: true}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				} else {
-					return {
-						ctor: '_Tuple2',
-						_0: _elm_lang$core$Native_Utils.update(
-							model,
-							{
-								isSearching: false,
-								failedToGetRatings: true,
-								failedDetails: _mfdavid$indierank$Main$httpErrorString(_p2._0._0)
-							}),
-						_1: _elm_lang$core$Platform_Cmd$none
-					};
-				}
+			_0: A2(
+				_elm_lang$html$Html$div,
+				{
+					ctor: '::',
+					_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$infoTextStyle),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('IndieRank is an independent ranking system for Uber, Cabify, 99Taxi, EasyTaxi and alikes.'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _mfdavid$indierank$Styles$styles(
+							A2(
+								_elm_lang$core$Basics_ops['++'],
+								_mfdavid$indierank$Styles$buttonEnabledStyle,
+								A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('ok, let me search'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
 		}
 	});
-var _mfdavid$indierank$Main$Search = {ctor: 'Search'};
+var _mfdavid$indierank$Main$reviewAdded = function (plate) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$titleStyle),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text('IndieRank'),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$infoTextStyle),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							A2(_elm_lang$core$Basics_ops['++'], 'Thanks! Review added for plate ', plate)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _mfdavid$indierank$Styles$styles(
+								A2(
+									_elm_lang$core$Basics_ops['++'],
+									_mfdavid$indierank$Styles$buttonEnabledStyle,
+									A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('ok, let me search'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _mfdavid$indierank$Main$UrlChange = function (a) {
+	return {ctor: 'UrlChange', _0: a};
+};
+var _mfdavid$indierank$Main$Search = function (a) {
+	return {ctor: 'Search', _0: a};
+};
+var _mfdavid$indierank$Main$ChangeReviewComment = function (a) {
+	return {ctor: 'ChangeReviewComment', _0: a};
+};
+var _mfdavid$indierank$Main$ChangeReviewScore = function (a) {
+	return {ctor: 'ChangeReviewScore', _0: a};
+};
 var _mfdavid$indierank$Main$ChangePlate = function (a) {
 	return {ctor: 'ChangePlate', _0: a};
 };
 var _mfdavid$indierank$Main$searchForm = F5(
-	function (plate, isSearching, failedToGetRatings, failedDetails, searchResult) {
+	function (plate, processingRequest, requestFailed, failedDetails, searchResult) {
 		var formatedPlate = _mfdavid$indierank$Main$formatPlate(plate);
-		var isSearchDisabled = !_mfdavid$indierank$Main$validPlate(plate);
 		return A2(
 			_elm_lang$html$Html$div,
 			{ctor: '[]'},
 			{
 				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$form,
-					{
-						ctor: '::',
-						_0: _elm_lang$html$Html_Events$onSubmit(_mfdavid$indierank$Main$Search),
-						_1: {ctor: '[]'}
-					},
-					{
-						ctor: '::',
-						_0: _mfdavid$indierank$Main$titleDiv,
-						_1: {
+				_0: _mfdavid$indierank$Main$titleDiv,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$form,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onSubmit(
+								_mfdavid$indierank$Main$Search(plate)),
+							_1: {ctor: '[]'}
+						},
+						{
 							ctor: '::',
 							_0: A2(
 								_elm_lang$html$Html$div,
@@ -15506,7 +16317,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 											_0: _elm_lang$html$Html_Attributes$autofocus(true),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$disabled(isSearching),
+												_0: _elm_lang$html$Html_Attributes$disabled(processingRequest),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Attributes$placeholder('Type the plate here'),
@@ -15540,7 +16351,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 								}),
 							_1: {
 								ctor: '::',
-								_0: isSearching ? A2(
+								_0: processingRequest ? A2(
 									_elm_lang$html$Html$button,
 									{
 										ctor: '::',
@@ -15555,7 +16366,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 										ctor: '::',
 										_0: _elm_lang$html$Html$text('searching...'),
 										_1: {ctor: '[]'}
-									}) : (_mfdavid$indierank$Main$validPlate(formatedPlate) ? A2(
+									}) : (_mfdavid$indierank$Main$isValidPlate(formatedPlate) ? A2(
 									_elm_lang$html$Html$button,
 									{
 										ctor: '::',
@@ -15588,7 +16399,274 @@ var _mfdavid$indierank$Main$searchForm = F5(
 									})),
 								_1: {
 									ctor: '::',
-									_0: failedToGetRatings ? A2(
+									_0: requestFailed ? A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(
+												A2(_elm_lang$core$Basics_ops['++'], 'Failed to retrieve data. Details: ', failedDetails)),
+											_1: {ctor: '[]'}
+										}) : A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text(''),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	});
+var _mfdavid$indierank$Main$addReview = F6(
+	function (plate, reviewScore, reviewComment, processingRequest, requestFailed, failedDetails) {
+		var validReview = A2(_mfdavid$indierank$Main$isValidReview, reviewScore, reviewComment);
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$centerStyle),
+				_1: {ctor: '[]'}
+			},
+			{
+				ctor: '::',
+				_0: _mfdavid$indierank$Main$titleDiv,
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$form,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onSubmit(_mfdavid$indierank$Main$Home),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$disabled(processingRequest),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$subtitleStyle),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text(plate),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$centerStyle),
+										_1: {ctor: '[]'}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$select,
+											{
+												ctor: '::',
+												_0: _mfdavid$indierank$Styles$styles(
+													A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$starsSelectStyle, _mfdavid$indierank$Styles$smallMarginTopStyle)),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(_mfdavid$indierank$Main$ChangeReviewScore),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$option,
+													{ctor: '[]'},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Select score'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$option,
+														{ctor: '[]'},
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html$text('1'),
+															_1: {ctor: '[]'}
+														}),
+													_1: {
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$option,
+															{ctor: '[]'},
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html$text('2'),
+																_1: {ctor: '[]'}
+															}),
+														_1: {
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$option,
+																{ctor: '[]'},
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html$text('3'),
+																	_1: {ctor: '[]'}
+																}),
+															_1: {
+																ctor: '::',
+																_0: A2(
+																	_elm_lang$html$Html$option,
+																	{ctor: '[]'},
+																	{
+																		ctor: '::',
+																		_0: _elm_lang$html$Html$text('4'),
+																		_1: {ctor: '[]'}
+																	}),
+																_1: {
+																	ctor: '::',
+																	_0: A2(
+																		_elm_lang$html$Html$option,
+																		{ctor: '[]'},
+																		{
+																			ctor: '::',
+																			_0: _elm_lang$html$Html$text('5'),
+																			_1: {ctor: '[]'}
+																		}),
+																	_1: {ctor: '[]'}
+																}
+															}
+														}
+													}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$div,
+										{
+											ctor: '::',
+											_0: _mfdavid$indierank$Styles$styles(
+												A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginBottomStyle, _mfdavid$indierank$Styles$smallMarginTopStyle)),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$input,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$autofocus(true),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$placeholder('Type review here'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Events$onInput(_mfdavid$indierank$Main$ChangePlate),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$maxlength(245),
+																_1: {
+																	ctor: '::',
+																	_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$reviewInputStyle),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Events$onInput(_mfdavid$indierank$Main$ChangeReviewComment),
+																		_1: {ctor: '[]'}
+																	}
+																}
+															}
+														}
+													}
+												},
+												{ctor: '[]'}),
+											_1: {ctor: '[]'}
+										}),
+									_1: {ctor: '[]'}
+								}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Events$onClick(
+									A3(_mfdavid$indierank$Main$SendReview, plate, reviewScore, reviewComment)),
+								_1: {
+									ctor: '::',
+									_0: ((!validReview) || processingRequest) ? _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$buttonDisabledStyle) : _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$buttonEnabledStyle),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$disabled(!validReview),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							{
+								ctor: '::',
+								_0: processingRequest ? _elm_lang$html$Html$text('adding review...') : _elm_lang$html$Html$text('add my review'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$br,
+								{ctor: '[]'},
+								{ctor: '[]'}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$button,
+									{
+										ctor: '::',
+										_0: processingRequest ? _mfdavid$indierank$Styles$styles(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_mfdavid$indierank$Styles$buttonDisabledStyle,
+												A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))) : _mfdavid$indierank$Styles$styles(
+											A2(
+												_elm_lang$core$Basics_ops['++'],
+												_mfdavid$indierank$Styles$cancelButtonEnabledStyle,
+												A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('never mind'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {
+									ctor: '::',
+									_0: requestFailed ? A2(
 										_elm_lang$html$Html$div,
 										{
 											ctor: '::',
@@ -15616,8 +16694,8 @@ var _mfdavid$indierank$Main$searchForm = F5(
 								}
 							}
 						}
-					}),
-				_1: {ctor: '[]'}
+					}
+				}
 			});
 	});
 var _mfdavid$indierank$Main$view = function (model) {
@@ -15631,11 +16709,29 @@ var _mfdavid$indierank$Main$view = function (model) {
 		},
 		{
 			ctor: '::',
-			_0: model.showResults ? _mfdavid$indierank$Main$resultDiv(model.searchResult) : A5(_mfdavid$indierank$Main$searchForm, model.plate, model.isSearching, model.failedToGetRatings, model.failedDetails, model.searchResult),
+			_0: function () {
+				var _p9 = model.currentRoute;
+				switch (_p9.ctor) {
+					case 'SearchRoute':
+						return A5(_mfdavid$indierank$Main$searchForm, model.plate, model.processingRequest, model.requestFailed, model.failedDetails, model.searchResult);
+					case 'SearchResultRoute':
+						return _mfdavid$indierank$Main$resultDiv(model.searchResult);
+					case 'AddReviewRoute':
+						return A6(_mfdavid$indierank$Main$addReview, _p9._0, model.reviewScore, model.reviewComment, model.processingRequest, model.requestFailed, model.failedDetails);
+					case 'AboutRoute':
+						return _mfdavid$indierank$Main$aboutPage;
+					case 'ReviewAdded':
+						return _mfdavid$indierank$Main$reviewAdded(_p9._0);
+					default:
+						return _mfdavid$indierank$Main$notFoundDiv;
+				}
+			}(),
 			_1: {ctor: '[]'}
 		});
 };
-var _mfdavid$indierank$Main$main = _elm_lang$html$Html$program(
+var _mfdavid$indierank$Main$main = A2(
+	_elm_lang$navigation$Navigation$program,
+	_mfdavid$indierank$Main$UrlChange,
 	{init: _mfdavid$indierank$Main$init, view: _mfdavid$indierank$Main$view, update: _mfdavid$indierank$Main$update, subscriptions: _mfdavid$indierank$Main$subscriptions})();
 
 var Elm = {};

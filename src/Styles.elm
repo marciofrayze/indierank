@@ -5,9 +5,16 @@ import Html exposing (body, button, div, header, input, li, nav, node)
 import Html.Attributes exposing (attribute, placeholder, type_)
 
 
+-- Helpers
+
+
 styles : List Style -> Html.Attribute msg
 styles =
     Css.asPairs >> Html.Attributes.style
+
+
+
+-- Colors
 
 
 primaryColor : Color
@@ -35,9 +42,29 @@ disabledDetailsColor =
     hex "D3D3D3"
 
 
+alertDetailsColor : Color
+alertDetailsColor =
+    hex "FF9800"
+
+
+
+-- Styles
+
+
 buttonStyle : List Style
 buttonStyle =
     [ color secondaryDetailsColor
+    , fontSize (px 25)
+    , textAlign center
+    , padding (px 10)
+    , borderRadius (px 5)
+    , outline none
+    ]
+
+
+linkStyle : List Style
+linkStyle =
+    [ color primaryDetailsColor
     , fontSize (px 25)
     , textAlign center
     , padding (px 10)
@@ -50,6 +77,14 @@ buttonEnabledStyle : List Style
 buttonEnabledStyle =
     buttonStyle
         ++ [ backgroundColor primaryDetailsColor
+           , borderColor primaryDetailsColor
+           ]
+
+
+cancelButtonEnabledStyle : List Style
+cancelButtonEnabledStyle =
+    buttonStyle
+        ++ [ backgroundColor alertDetailsColor
            , borderColor primaryDetailsColor
            ]
 
@@ -108,7 +143,9 @@ errorStyle =
 
 centerStyle : List Style
 centerStyle =
-    [ textAlign center ]
+    [ textAlign center
+    , verticalAlign middle
+    ]
 
 
 blockStyle : List Style
@@ -139,7 +176,32 @@ marginTopStyle =
 plateInputStyle : List Style
 plateInputStyle =
     [ height (px 40)
-    , width (px 190)
+    , width (px 195)
+    , padding (px 15)
+    , fontSize (px 40)
+    , outline none
+    ]
+
+
+starsSelectStyle : List Style
+starsSelectStyle =
+    [ height (px 50)
+    , width (px 220)
+    , padding (px 2)
+    , fontSize (px 32)
+    , outline none
+    , textAlignLast center
+    ]
+
+
+
+-- TODO: create generic and mobile first input style
+
+
+reviewInputStyle : List Style
+reviewInputStyle =
+    [ height (px 40)
+    , width (pct 70)
     , padding (px 15)
     , fontSize (px 40)
     , outline none
