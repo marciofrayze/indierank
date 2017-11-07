@@ -68,7 +68,6 @@ type alias Model =
     , failedDetails : String
     , searchResult : SearchResult
     , showResults : Bool
-    , history : List Navigation.Location
     , currentRoute : Router.Route
     }
 
@@ -116,7 +115,7 @@ main =
 
 defaultModel : Model
 defaultModel =
-    Model "" "" "" False False "" (SearchResult "" []) False [] Router.NotFoundRoute
+    Model "" "" "" False False "" (SearchResult "" []) False Router.NotFoundRoute
 
 
 init : Navigation.Location -> ( Model, Cmd Msg )
