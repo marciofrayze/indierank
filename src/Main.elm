@@ -28,6 +28,7 @@ import Html.Events
         ( onInput
         , onSubmit
         , onClick
+        , onWithOptions
         )
 import Http
 import Json.Decode as Decode
@@ -139,6 +140,7 @@ type Msg
     | SendReview String String String -- TODO: Create a type?
     | ShowRating (Result Http.Error SearchResult)
     | ShowReviewAdded (Result Http.Error AddReviewResult)
+    | ShowAbout
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -207,7 +209,7 @@ update msg model =
                 , plate = ""
                 , currentRoute = Router.SearchRoute
               }
-            , Cmd.none
+            , Navigation.newUrl ("/")
             )
 
         AddReview plate ->
@@ -239,6 +241,13 @@ update msg model =
             , Cmd.none
             )
 
+        ShowAbout ->
+            ( { model
+                | currentRoute = Router.AboutRoute
+              }
+            , Navigation.newUrl ("/about")
+            )
+
 
 stateBasedOnURL : Location -> Model -> ( Model, Cmd msg )
 stateBasedOnURL location model =
@@ -263,8 +272,7 @@ stateBasedOnURL location model =
         Router.AboutRoute ->
             ( { model
                 | currentRoute = Router.AboutRoute
-                , requestFailed = True
-                , failedDetails = toString (Router.parseLocation location)
+                , requestFailed = False
               }
             , Cmd.none
             )
@@ -300,19 +308,19 @@ httpErrorString : Http.Error -> String
 httpErrorString error =
     case error of
         Http.BadUrl text ->
-            "Bad Url: " ++ text
+            "Url incorreta: " ++ text
 
         Http.Timeout ->
-            "Http Timeout"
+            "Tempo limite excedido"
 
         Http.NetworkError ->
-            "Network Error"
+            "Erro na conexão de rede"
 
         Http.BadStatus response ->
-            "Bad Http Status: " ++ toString response.status.code
+            "Erro no retorno da requisição: " ++ toString response.status.code
 
         Http.BadPayload message response ->
-            "Bad Http Payload: "
+            "Erro no retorno da requisição: "
                 ++ toString message
                 ++ " ("
                 ++ toString response.status.code
@@ -332,10 +340,10 @@ reviewsFoundText : number -> String
 reviewsFoundText ratingsSize =
     case ratingsSize of
         1 ->
-            "Found 1 review."
+            "Encontrada 1 classificação."
 
         _ ->
-            "Found " ++ toString ratingsSize ++ " reviews."
+            "Encontradas " ++ toString ratingsSize ++ " classificações."
 
 
 isValidReview : String -> String -> Bool
@@ -397,9 +405,9 @@ resultDiv searchResult =
                 ]
             , div [ styles infoTextStyle ]
                 [ if containsReviews then
-                    Html.text ("Average score: " ++ toString averageScore)
+                    Html.text ("Pontuação média: " ++ toString averageScore)
                   else
-                    Html.text "No results found for this driver yet."
+                    Html.text "Nenhuma classificação encontrada para este veículo."
                 ]
             , div
                 [ styles infoTextStyle ]
@@ -417,7 +425,7 @@ resultDiv searchResult =
                     )
                 , onClick (AddReview searchResult.plate)
                 ]
-                [ Html.text "add review" ]
+                [ Html.text "adicionar classificação" ]
             , br [] []
             , button
                 [ styles
@@ -427,16 +435,16 @@ resultDiv searchResult =
                     )
                 , onClick Home
                 ]
-                [ Html.text "another search" ]
+                [ Html.text "pesquisar novamente" ]
             ]
 
 
 ratingDiv : Rating -> Html.Html msg
 ratingDiv rating =
     div []
-        [ Html.text rating.comment
+        [ Html.text ("Nota: " ++ toString rating.score)
         , div []
-            [ Html.text ("Score: " ++ toString rating.score)
+            [ Html.text ("Comentário: " ++ toString rating.comment)
             ]
         ]
 
@@ -456,17 +464,28 @@ aboutPage =
         []
         [ titleDiv
         , div [ styles infoTextStyle ]
-            [ Html.text "IndieRank is an independent ranking system for Uber, Cabify, 99Taxi, EasyTaxi and alikes."
+            [ div [ styles smallMarginBottomStyle ]
+                [ Html.text "IndieRank é um sistema independente e anônimo de ranqueamento para o Uber, Cabify, 99Taxi, EasyTaxi e serviços similares."
+                ]
+            , div [ styles smallMarginBottomStyle ]
+                [ Html.text "Infelizmente ainda existem inúmeros casos de assédio de todos os tipos e nem sempre as empresas estão dispostas a tomar alguma atitude. Pensando nisso, criamos este site para tentar compartilhar informações e ajudar a alertar as pessoas para tentar tornar estes serviços de transportes um pouco mais seguros."
+                ]
+            , div [ styles smallMarginBottomStyle ]
+                [ Html.text "Então da próxima vez que for utilizar um destes serviços, ao descobrir a placa do motorista que vai utilizar, entre neste site e consulte seu histórico para saber se alguém já fez algum comentário sobre o mesmo!"
+                ]
+            , div []
+                [ Html.text "E caso tenha feito uma viagem desagradável, compartilhe com o pessoal para que outras pessoas evitem passar pelo mesmo problema ;)"
+                ]
             ]
         , button
             [ styles
                 (buttonEnabledStyle
-                    ++ smallMarginTopStyle
+                    ++ marginTopStyle
                     ++ centerStyle
                 )
             , onClick Home
             ]
-            [ Html.text "ok, let me search" ]
+            [ Html.text "certo, deixe-me pesquisar" ]
         ]
 
 
@@ -488,7 +507,7 @@ searchForm plate processingRequest requestFailed failedDetails searchResult =
                     [ input
                         [ autofocus True
                         , disabled processingRequest
-                        , placeholder "Type the plate here"
+                        , placeholder "Digite aqui a placa"
                         , onInput ChangePlate
                         , maxlength 8
                         , styles plateInputStyle
@@ -505,22 +524,35 @@ searchForm plate processingRequest requestFailed failedDetails searchResult =
                         [ disabled True
                         , styles buttonDisabledStyle
                         ]
-                        [ Html.text "searching..." ]
+                        [ Html.text "pesquisando..." ]
                   else if isValidPlate formatedPlate then
                     button
                         [ disabled False
                         , styles buttonEnabledStyle
                         ]
-                        [ Html.text "search" ]
+                        [ Html.text "pesquisar" ]
                   else
                     button
                         [ disabled True
                         , styles buttonDisabledStyle
                         ]
-                        [ Html.text "search" ]
+                        [ Html.text "pesquisar" ]
+                , div
+                    [ styles smallMarginTopStyle
+                    ]
+                    [ button
+                        [ styles buttonEnabledStyle
+                        , onWithOptions "click"
+                            { stopPropagation = True
+                            , preventDefault = True
+                            }
+                            (Decode.succeed ShowAbout)
+                        ]
+                        [ Html.text "pra que serve isso?" ]
+                    ]
                 , if requestFailed then
                     Html.div [ styles errorStyle ]
-                        [ Html.text ("Failed to retrieve data. Details: " ++ failedDetails)
+                        [ Html.text ("Não foi possível obter informações. Detalhes: " ++ failedDetails)
                         ]
                   else
                     Html.div [ styles errorStyle ]
@@ -566,7 +598,7 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
         div [ styles centerStyle ]
             [ titleDiv
             , form
-                [ onSubmit Home
+                [ onSubmit (SendReview plate reviewScore reviewComment)
                 , disabled processingRequest
                 ]
                 [ div [ styles subtitleStyle ]
@@ -582,7 +614,7 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
                         ]
                         [ Html.option
                             []
-                            [ Html.text "Select score" ]
+                            [ Html.text "Selecione uma nota" ]
                         , Html.option []
                             [ Html.text "1" ]
                         , Html.option []
@@ -603,7 +635,7 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
                     ]
                     [ input
                         [ autofocus True
-                        , placeholder "Type review here"
+                        , placeholder "Digite aqui seus comentários"
                         , onInput ChangePlate
                         , maxlength 245
                         , styles reviewInputStyle
@@ -625,9 +657,9 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
                 , disabled (not validReview)
                 ]
                 [ if processingRequest then
-                    Html.text "adding review..."
+                    Html.text "incluindo classificação..."
                   else
-                    Html.text "add my review"
+                    Html.text "incluir minha classificação"
                 ]
             , br [] []
             , button
@@ -645,10 +677,10 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
                         )
                 , onClick Home
                 ]
-                [ Html.text "never mind" ]
+                [ Html.text "deixa pra lá" ]
             , if requestFailed then
                 Html.div [ styles errorStyle ]
-                    [ Html.text ("Failed to retrieve data. Details: " ++ failedDetails)
+                    [ Html.text ("Não foi possível obter informações. Detalhes: " ++ failedDetails)
                     ]
               else
                 Html.div [ styles errorStyle ]
@@ -659,7 +691,7 @@ addReview plate reviewScore reviewComment processingRequest requestFailed failed
 
 notFoundDiv : Html.Html msg
 notFoundDiv =
-    div [] [ Html.text "404 - Page not found." ]
+    div [] [ Html.text "404 - Página não encontrada." ]
 
 
 reviewAdded : String -> Html.Html Msg
@@ -668,18 +700,23 @@ reviewAdded plate =
         [ styles titleStyle
         ]
         [ Html.text "IndieRank"
-        , div [ styles infoTextStyle ]
-            [ Html.text ("Thanks! Review added for plate " ++ plate)
+        , div
+            [ styles
+                (infoTextStyle
+                    ++ marginTopStyle
+                )
+            ]
+            [ Html.text ("Obrigado! Classificação incluída para placa " ++ plate)
             ]
         , button
             [ styles
                 (buttonEnabledStyle
-                    ++ smallMarginTopStyle
+                    ++ marginTopStyle
                     ++ centerStyle
                 )
             , onClick Home
             ]
-            [ Html.text "ok, let me search" ]
+            [ Html.text "voltar para página inicial" ]
         ]
 
 
@@ -691,7 +728,7 @@ getRatings : String -> Cmd Msg
 getRatings plate =
     let
         url =
-            "http://10.32.18.57:9393?plate=" ++ plate
+            "http://10.32.18.57:9292/search?plate=" ++ plate
 
         -- Return exemple: {"plate":"ABC-1234","ratings":[{"comment":"really bad driver","score":1}]}
         request =
@@ -704,7 +741,7 @@ postReview : String -> String -> String -> Cmd Msg
 postReview plate reviewScore reviewComment =
     let
         url =
-            "http://10.32.18.57:9393/add?plate=" ++ plate ++ "&score=" ++ reviewScore ++ "&comment=" ++ reviewComment
+            "http://10.32.18.57:9292/add?plate=" ++ plate ++ "&score=" ++ reviewScore ++ "&comment=" ++ reviewComment
 
         request =
             Http.post url Http.emptyBody decodePostReview

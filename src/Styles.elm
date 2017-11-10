@@ -186,7 +186,7 @@ plateInputStyle =
 starsSelectStyle : List Style
 starsSelectStyle =
     [ height (px 50)
-    , width (px 220)
+    , width (px 310)
     , padding (px 2)
     , fontSize (px 32)
     , outline none

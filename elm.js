@@ -15212,7 +15212,7 @@ var _mfdavid$indierank$Styles$starsSelectStyle = {
 	_1: {
 		ctor: '::',
 		_0: _rtfeldman$elm_css$Css$width(
-			_rtfeldman$elm_css$Css$px(220)),
+			_rtfeldman$elm_css$Css$px(310)),
 		_1: {
 			ctor: '::',
 			_0: _rtfeldman$elm_css$Css$padding(
@@ -15550,7 +15550,7 @@ var _mfdavid$indierank$Main$notFoundDiv = A2(
 	{ctor: '[]'},
 	{
 		ctor: '::',
-		_0: _elm_lang$html$Html$text('404 - Page not found.'),
+		_0: _elm_lang$html$Html$text('404 - Página não encontrada.'),
 		_1: {ctor: '[]'}
 	});
 var _mfdavid$indierank$Main$formatPlate = function (plate) {
@@ -15602,7 +15602,11 @@ var _mfdavid$indierank$Main$ratingDiv = function (rating) {
 		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$html$Html$text(rating.comment),
+			_0: _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Nota: ',
+					_elm_lang$core$Basics$toString(rating.score))),
 			_1: {
 				ctor: '::',
 				_0: A2(
@@ -15613,8 +15617,8 @@ var _mfdavid$indierank$Main$ratingDiv = function (rating) {
 						_0: _elm_lang$html$Html$text(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
-								'Score: ',
-								_elm_lang$core$Basics$toString(rating.score))),
+								'Comentário: ',
+								_elm_lang$core$Basics$toString(rating.comment))),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
@@ -15654,15 +15658,15 @@ var _mfdavid$indierank$Main$isValidReview = F2(
 var _mfdavid$indierank$Main$reviewsFoundText = function (ratingsSize) {
 	var _p0 = ratingsSize;
 	if (_p0 === 1) {
-		return 'Found 1 review.';
+		return 'Encontrada 1 classificação.';
 	} else {
 		return A2(
 			_elm_lang$core$Basics_ops['++'],
-			'Found ',
+			'Encontradas ',
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				_elm_lang$core$Basics$toString(ratingsSize),
-				' reviews.'));
+				' classificações.'));
 	}
 };
 var _mfdavid$indierank$Main$isValidPlate = function (plate) {
@@ -15674,20 +15678,20 @@ var _mfdavid$indierank$Main$httpErrorString = function (error) {
 	var _p1 = error;
 	switch (_p1.ctor) {
 		case 'BadUrl':
-			return A2(_elm_lang$core$Basics_ops['++'], 'Bad Url: ', _p1._0);
+			return A2(_elm_lang$core$Basics_ops['++'], 'Url incorreta: ', _p1._0);
 		case 'Timeout':
-			return 'Http Timeout';
+			return 'Tempo limite excedido';
 		case 'NetworkError':
-			return 'Network Error';
+			return 'Erro na conexão de rede';
 		case 'BadStatus':
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
-				'Bad Http Status: ',
+				'Erro no retorno da requisição: ',
 				_elm_lang$core$Basics$toString(_p1._0.status.code));
 		default:
 			return A2(
 				_elm_lang$core$Basics_ops['++'],
-				'Bad Http Payload: ',
+				'Erro no retorno da requisição: ',
 				A2(
 					_elm_lang$core$Basics_ops['++'],
 					_elm_lang$core$Basics$toString(_p1._0),
@@ -15730,12 +15734,7 @@ var _mfdavid$indierank$Main$stateBasedOnURL = F2(
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
-						{
-							currentRoute: _mfdavid$indierank$Router$AboutRoute,
-							requestFailed: true,
-							failedDetails: _elm_lang$core$Basics$toString(
-								_mfdavid$indierank$Router$parseLocation(location))
-						}),
+						{currentRoute: _mfdavid$indierank$Router$AboutRoute, requestFailed: false}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
 			case 'AddReviewRoute':
@@ -15775,27 +15774,10 @@ var _mfdavid$indierank$Main$stateBasedOnURL = F2(
 var _mfdavid$indierank$Main$subscriptions = function (model) {
 	return _elm_lang$core$Platform_Sub$none;
 };
-var _mfdavid$indierank$Main$Model = function (a) {
-	return function (b) {
-		return function (c) {
-			return function (d) {
-				return function (e) {
-					return function (f) {
-						return function (g) {
-							return function (h) {
-								return function (i) {
-									return function (j) {
-										return {plate: a, reviewScore: b, reviewComment: c, processingRequest: d, requestFailed: e, failedDetails: f, searchResult: g, showResults: h, history: i, currentRoute: j};
-									};
-								};
-							};
-						};
-					};
-				};
-			};
-		};
-	};
-};
+var _mfdavid$indierank$Main$Model = F9(
+	function (a, b, c, d, e, f, g, h, i) {
+		return {plate: a, reviewScore: b, reviewComment: c, processingRequest: d, requestFailed: e, failedDetails: f, searchResult: g, showResults: h, currentRoute: i};
+	});
 var _mfdavid$indierank$Main$AddReviewResult = F3(
 	function (a, b, c) {
 		return {plate: a, score: b, comment: c};
@@ -15831,12 +15813,20 @@ var _mfdavid$indierank$Main$SearchResult = F2(
 	function (a, b) {
 		return {plate: a, ratings: b};
 	});
-var _mfdavid$indierank$Main$defaultModel = _mfdavid$indierank$Main$Model('')('')('')(false)(false)('')(
+var _mfdavid$indierank$Main$defaultModel = A9(
+	_mfdavid$indierank$Main$Model,
+	'',
+	'',
+	'',
+	false,
+	false,
+	'',
 	A2(
 		_mfdavid$indierank$Main$SearchResult,
 		'',
-		{ctor: '[]'}))(false)(
-	{ctor: '[]'})(_mfdavid$indierank$Router$NotFoundRoute);
+		{ctor: '[]'}),
+	false,
+	_mfdavid$indierank$Router$NotFoundRoute);
 var _mfdavid$indierank$Main$init = function (location) {
 	return A2(_mfdavid$indierank$Main$stateBasedOnURL, location, _mfdavid$indierank$Main$defaultModel);
 };
@@ -15878,6 +15868,7 @@ var _mfdavid$indierank$Main$decodeRatings = A3(
 		_elm_lang$core$Json_Decode$field,
 		'ratings',
 		_elm_lang$core$Json_Decode$list(_mfdavid$indierank$Main$decodeRating)));
+var _mfdavid$indierank$Main$ShowAbout = {ctor: 'ShowAbout'};
 var _mfdavid$indierank$Main$ShowReviewAdded = function (a) {
 	return {ctor: 'ShowReviewAdded', _0: a};
 };
@@ -15885,7 +15876,7 @@ var _mfdavid$indierank$Main$postReview = F3(
 	function (plate, reviewScore, reviewComment) {
 		var url = A2(
 			_elm_lang$core$Basics_ops['++'],
-			'http://10.32.18.57:9393/add?plate=',
+			'http://10.32.18.57:9292/add?plate=',
 			A2(
 				_elm_lang$core$Basics_ops['++'],
 				plate,
@@ -15903,7 +15894,7 @@ var _mfdavid$indierank$Main$ShowRating = function (a) {
 	return {ctor: 'ShowRating', _0: a};
 };
 var _mfdavid$indierank$Main$getRatings = function (plate) {
-	var url = A2(_elm_lang$core$Basics_ops['++'], 'http://10.32.18.57:9393?plate=', plate);
+	var url = A2(_elm_lang$core$Basics_ops['++'], 'http://10.32.18.57:9292/search?plate=', plate);
 	var request = A2(_elm_lang$http$Http$get, url, _mfdavid$indierank$Main$decodeRatings);
 	return A2(_elm_lang$http$Http$send, _mfdavid$indierank$Main$ShowRating, request);
 };
@@ -15982,7 +15973,7 @@ var _mfdavid$indierank$Main$update = F2(
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{processingRequest: false, requestFailed: false, failedDetails: '', plate: '', currentRoute: _mfdavid$indierank$Router$SearchRoute}),
-					_1: _elm_lang$core$Platform_Cmd$none
+					_1: _elm_lang$navigation$Navigation$newUrl('/')
 				};
 			case 'AddReview':
 				var _p8 = _p6._0;
@@ -16013,13 +16004,21 @@ var _mfdavid$indierank$Main$update = F2(
 						{reviewScore: _p6._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
 				};
-			default:
+			case 'ChangeReviewComment':
 				return {
 					ctor: '_Tuple2',
 					_0: _elm_lang$core$Native_Utils.update(
 						model,
 						{reviewComment: _p6._0}),
 					_1: _elm_lang$core$Platform_Cmd$none
+				};
+			default:
+				return {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.update(
+						model,
+						{currentRoute: _mfdavid$indierank$Router$AboutRoute}),
+					_1: _elm_lang$navigation$Navigation$newUrl('/about')
 				};
 		}
 	});
@@ -16077,8 +16076,8 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 							_0: containsReviews ? _elm_lang$html$Html$text(
 								A2(
 									_elm_lang$core$Basics_ops['++'],
-									'Average score: ',
-									_elm_lang$core$Basics$toString(averageScore))) : _elm_lang$html$Html$text('No results found for this driver yet.'),
+									'Pontuação média: ',
+									_elm_lang$core$Basics$toString(averageScore))) : _elm_lang$html$Html$text('Nenhuma classificação encontrada para este veículo.'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {
@@ -16124,7 +16123,7 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('add review'),
+										_0: _elm_lang$html$Html$text('adicionar classificação'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -16152,7 +16151,7 @@ var _mfdavid$indierank$Main$resultDiv = function (searchResult) {
 											},
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text('another search'),
+												_0: _elm_lang$html$Html$text('pesquisar novamente'),
 												_1: {ctor: '[]'}
 											}),
 										_1: {ctor: '[]'}
@@ -16182,8 +16181,60 @@ var _mfdavid$indierank$Main$aboutPage = A2(
 				},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('IndieRank is an independent ranking system for Uber, Cabify, 99Taxi, EasyTaxi and alikes.'),
-					_1: {ctor: '[]'}
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$smallMarginBottomStyle),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('IndieRank é um sistema independente e anônimo de ranqueamento para o Uber, Cabify, 99Taxi, EasyTaxi e serviços similares.'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{
+								ctor: '::',
+								_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$smallMarginBottomStyle),
+								_1: {ctor: '[]'}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Infelizmente ainda existem inúmeros casos de assédio de todos os tipos e nem sempre as empresas estão dispostas a tomar alguma atitude. Pensando nisso, criamos este site para tentar compartilhar informações e ajudar a alertar as pessoas para tentar tornar estes serviços de transportes um pouco mais seguros.'),
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$smallMarginBottomStyle),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html$text('Então da próxima vez que for utilizar um destes serviços, ao descobrir a placa do motorista que vai utilizar, entre neste site e consulte seu histórico para saber se alguém já fez algum comentário sobre o mesmo!'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html$text('E caso tenha feito uma viagem desagradável, compartilhe com o pessoal para que outras pessoas evitem passar pelo mesmo problema ;)'),
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
 				}),
 			_1: {
 				ctor: '::',
@@ -16195,7 +16246,7 @@ var _mfdavid$indierank$Main$aboutPage = A2(
 							A2(
 								_elm_lang$core$Basics_ops['++'],
 								_mfdavid$indierank$Styles$buttonEnabledStyle,
-								A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+								A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$marginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
@@ -16204,7 +16255,7 @@ var _mfdavid$indierank$Main$aboutPage = A2(
 					},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html$text('ok, let me search'),
+						_0: _elm_lang$html$Html$text('certo, deixe-me pesquisar'),
 						_1: {ctor: '[]'}
 					}),
 				_1: {ctor: '[]'}
@@ -16228,13 +16279,14 @@ var _mfdavid$indierank$Main$reviewAdded = function (plate) {
 					_elm_lang$html$Html$div,
 					{
 						ctor: '::',
-						_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$infoTextStyle),
+						_0: _mfdavid$indierank$Styles$styles(
+							A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$infoTextStyle, _mfdavid$indierank$Styles$marginTopStyle)),
 						_1: {ctor: '[]'}
 					},
 					{
 						ctor: '::',
 						_0: _elm_lang$html$Html$text(
-							A2(_elm_lang$core$Basics_ops['++'], 'Thanks! Review added for plate ', plate)),
+							A2(_elm_lang$core$Basics_ops['++'], 'Obrigado! Classificação incluída para placa ', plate)),
 						_1: {ctor: '[]'}
 					}),
 				_1: {
@@ -16247,7 +16299,7 @@ var _mfdavid$indierank$Main$reviewAdded = function (plate) {
 								A2(
 									_elm_lang$core$Basics_ops['++'],
 									_mfdavid$indierank$Styles$buttonEnabledStyle,
-									A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$smallMarginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
+									A2(_elm_lang$core$Basics_ops['++'], _mfdavid$indierank$Styles$marginTopStyle, _mfdavid$indierank$Styles$centerStyle))),
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$html$Html_Events$onClick(_mfdavid$indierank$Main$Home),
@@ -16256,7 +16308,7 @@ var _mfdavid$indierank$Main$reviewAdded = function (plate) {
 						},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text('ok, let me search'),
+							_0: _elm_lang$html$Html$text('voltar para página inicial'),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
@@ -16320,7 +16372,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 												_0: _elm_lang$html$Html_Attributes$disabled(processingRequest),
 												_1: {
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$placeholder('Type the plate here'),
+													_0: _elm_lang$html$Html_Attributes$placeholder('Digite aqui a placa'),
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$html$Html_Events$onInput(_mfdavid$indierank$Main$ChangePlate),
@@ -16364,7 +16416,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('searching...'),
+										_0: _elm_lang$html$Html$text('pesquisando...'),
 										_1: {ctor: '[]'}
 									}) : (_mfdavid$indierank$Main$isValidPlate(formatedPlate) ? A2(
 									_elm_lang$html$Html$button,
@@ -16379,7 +16431,7 @@ var _mfdavid$indierank$Main$searchForm = F5(
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('search'),
+										_0: _elm_lang$html$Html$text('pesquisar'),
 										_1: {ctor: '[]'}
 									}) : A2(
 									_elm_lang$html$Html$button,
@@ -16394,36 +16446,70 @@ var _mfdavid$indierank$Main$searchForm = F5(
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('search'),
+										_0: _elm_lang$html$Html$text('pesquisar'),
 										_1: {ctor: '[]'}
 									})),
 								_1: {
 									ctor: '::',
-									_0: requestFailed ? A2(
+									_0: A2(
 										_elm_lang$html$Html$div,
 										{
 											ctor: '::',
-											_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
+											_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$smallMarginTopStyle),
 											_1: {ctor: '[]'}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text(
-												A2(_elm_lang$core$Basics_ops['++'], 'Failed to retrieve data. Details: ', failedDetails)),
-											_1: {ctor: '[]'}
-										}) : A2(
-										_elm_lang$html$Html$div,
-										{
-											ctor: '::',
-											_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
-											_1: {ctor: '[]'}
-										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text(''),
+											_0: A2(
+												_elm_lang$html$Html$button,
+												{
+													ctor: '::',
+													_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$buttonEnabledStyle),
+													_1: {
+														ctor: '::',
+														_0: A3(
+															_elm_lang$html$Html_Events$onWithOptions,
+															'click',
+															{stopPropagation: true, preventDefault: true},
+															_elm_lang$core$Json_Decode$succeed(_mfdavid$indierank$Main$ShowAbout)),
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('pra que serve isso?'),
+													_1: {ctor: '[]'}
+												}),
 											_1: {ctor: '[]'}
 										}),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: requestFailed ? A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(
+													A2(_elm_lang$core$Basics_ops['++'], 'Não foi possível obter informações. Detalhes: ', failedDetails)),
+												_1: {ctor: '[]'}
+											}) : A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _mfdavid$indierank$Styles$styles(_mfdavid$indierank$Styles$errorStyle),
+												_1: {ctor: '[]'}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text(''),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}),
@@ -16450,7 +16536,8 @@ var _mfdavid$indierank$Main$addReview = F6(
 						_elm_lang$html$Html$form,
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Events$onSubmit(_mfdavid$indierank$Main$Home),
+							_0: _elm_lang$html$Html_Events$onSubmit(
+								A3(_mfdavid$indierank$Main$SendReview, plate, reviewScore, reviewComment)),
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$html$Html_Attributes$disabled(processingRequest),
@@ -16501,7 +16588,7 @@ var _mfdavid$indierank$Main$addReview = F6(
 													{ctor: '[]'},
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html$text('Select score'),
+														_0: _elm_lang$html$Html$text('Selecione uma nota'),
 														_1: {ctor: '[]'}
 													}),
 												_1: {
@@ -16582,7 +16669,7 @@ var _mfdavid$indierank$Main$addReview = F6(
 													_0: _elm_lang$html$Html_Attributes$autofocus(true),
 													_1: {
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$placeholder('Type review here'),
+														_0: _elm_lang$html$Html_Attributes$placeholder('Digite aqui seus comentários'),
 														_1: {
 															ctor: '::',
 															_0: _elm_lang$html$Html_Events$onInput(_mfdavid$indierank$Main$ChangePlate),
@@ -16629,7 +16716,7 @@ var _mfdavid$indierank$Main$addReview = F6(
 							},
 							{
 								ctor: '::',
-								_0: processingRequest ? _elm_lang$html$Html$text('adding review...') : _elm_lang$html$Html$text('add my review'),
+								_0: processingRequest ? _elm_lang$html$Html$text('incluindo classificação...') : _elm_lang$html$Html$text('incluir minha classificação'),
 								_1: {ctor: '[]'}
 							}),
 						_1: {
@@ -16661,7 +16748,7 @@ var _mfdavid$indierank$Main$addReview = F6(
 									},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('never mind'),
+										_0: _elm_lang$html$Html$text('deixa pra lá'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
@@ -16676,7 +16763,7 @@ var _mfdavid$indierank$Main$addReview = F6(
 										{
 											ctor: '::',
 											_0: _elm_lang$html$Html$text(
-												A2(_elm_lang$core$Basics_ops['++'], 'Failed to retrieve data. Details: ', failedDetails)),
+												A2(_elm_lang$core$Basics_ops['++'], 'Não foi possível obter informações. Detalhes: ', failedDetails)),
 											_1: {ctor: '[]'}
 										}) : A2(
 										_elm_lang$html$Html$div,
