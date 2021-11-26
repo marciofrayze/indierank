@@ -1,6 +1,6 @@
 # RackStep App Template
 
-This is a fully functional example app built using [RackStep] (https://github.com/mfdavid/rackstep). You may use this
+This is a fully functional example app built using [RackStep](https://github.com/mfdavid/rackstep). You may use this
 as the starting point to your own app.
 
 
